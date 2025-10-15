@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Mission Control Pathway Tracker</title>
+    <title>Mission Control x Pathway Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -176,8 +176,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Mission Control Pathway Tracker</h1>
-            <p>Content Version Management System</p>
+            <h1> Mission Control x Pathway Tracker</h1>
+            <p>Version Control System</p>
         </div>
 
         <div id="globalLoader" class="global-loader hidden">
@@ -602,7 +602,7 @@
                 e.preventDefault();
                 
                 if (!formState.classId || !formState.clientId || !formState.programmeId) {
-                    showMessage('addMessage', '❌ Please complete all required fields', 'error');
+                    showMessage('addMessage', 'Please complete all required fields', 'error');
                     return;
                 }
 
@@ -647,7 +647,7 @@
 
                     if (error) throw error;
 
-                    showMessage('addMessage', '✅ Content version created successfully!', 'success');
+                    showMessage('addMessage', 'Content version created successfully!', 'success');
                     document.getElementById('addForm').reset();
                     formState = { clientId: null, programmeId: null, moduleId: null, classId: null };
                     await loadAllData();
@@ -658,7 +658,7 @@
                     document.getElementById('addClass').disabled = true;
 
                 } catch (error) {
-                    showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+                    showMessage('addMessage', 'Error: ' + error.message, 'error');
                 } finally {
                     hideGlobalLoading();
                 }
@@ -727,7 +727,7 @@
         async function createNewClient() {
             const name = document.getElementById('newClientName').value.trim();
             if (!name) {
-                showMessage('addMessage', '❌ Please enter a client name', 'error');
+                showMessage('addMessage', 'Please enter a client name', 'error');
                 return;
             }
 
@@ -754,9 +754,9 @@
                 document.getElementById('newClientName').value = '';
                 sel.dispatchEvent(new Event('change'));
 
-                showMessage('addMessage', '✅ Client created!', 'success');
+                showMessage('addMessage', 'Client created!', 'success');
             } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+                showMessage('addMessage', 'Error: ' + error.message, 'error');
             } finally {
                 hideGlobalLoading();
             }
@@ -765,7 +765,7 @@
         async function createNewProgramme() {
             const name = document.getElementById('newProgrammeName').value.trim();
             if (!name || !formState.clientId) {
-                showMessage('addMessage', '❌ Please select a client and enter programme name', 'error');
+                showMessage('addMessage', 'Please select a client and enter programme name', 'error');
                 return;
             }
 
@@ -805,9 +805,9 @@
                 document.getElementById('newProgrammeName').value = '';
                 sel.dispatchEvent(new Event('change'));
 
-                showMessage('addMessage', '✅ Programme created!', 'success');
+                showMessage('addMessage', 'Programme created!', 'success');
             } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+                showMessage('addMessage', 'Error: ' + error.message, 'error');
             } finally {
                 hideGlobalLoading();
             }
@@ -817,7 +817,7 @@
             const name = document.getElementById('newModuleName').value.trim();
             const num = document.getElementById('newModuleNumber').value;
             if (!name || !num || !formState.programmeId) {
-                showMessage('addMessage', '❌ Please enter all module details', 'error');
+                showMessage('addMessage', 'Please enter all module details', 'error');
                 return;
             }
 
@@ -849,9 +849,9 @@
                 document.getElementById('newModuleNumber').value = '';
                 sel.dispatchEvent(new Event('change'));
 
-                showMessage('addMessage', '✅ Module created!', 'success');
+                showMessage('addMessage', 'Module created!', 'success');
             } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+                showMessage('addMessage', 'Error: ' + error.message, 'error');
             } finally {
                 hideGlobalLoading();
             }
@@ -861,7 +861,7 @@
             const name = document.getElementById('newClassName').value.trim();
             const num = document.getElementById('newClassNumber').value;
             if (!name || !num || !formState.moduleId) {
-                showMessage('addMessage', '❌ Please enter all class details', 'error');
+                showMessage('addMessage', 'Please enter all class details', 'error');
                 return;
             }
 
@@ -894,9 +894,9 @@
                 document.getElementById('newClassNumber').value = '';
                 sel.dispatchEvent(new Event('change'));
 
-                showMessage('addMessage', '✅ Class created!', 'success');
+                showMessage('addMessage', 'Class created!', 'success');
             } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+                showMessage('addMessage', 'Error: ' + error.message, 'error');
             } finally {
                 hideGlobalLoading();
             }
@@ -1146,7 +1146,7 @@
                 if (error) throw error;
 
                 document.getElementById('modalMessage').innerHTML = 
-                    '<div class="message success">✅ Updated successfully!</div>';
+                    '<div class="message success">Updated successfully!</div>';
 
                 setTimeout(() => {
                     closeModal();
@@ -1155,7 +1155,7 @@
 
             } catch (error) {
                 document.getElementById('modalMessage').innerHTML = 
-                    '<div class="message error">❌ Error: ' + error.message + '</div>';
+                    '<div class="message error">Error: ' + error.message + '</div>';
             } finally {
                 hideGlobalLoading();
             }
@@ -1179,10 +1179,10 @@
                 await loadAllData();
                 applyFilters();
                 
-                alert('✅ Version deleted successfully!');
+                alert('Version deleted successfully!');
 
             } catch (error) {
-                alert('❌ Error deleting version: ' + error.message);
+                alert('Error deleting version: ' + error.message);
             } finally {
                 hideGlobalLoading();
             }
