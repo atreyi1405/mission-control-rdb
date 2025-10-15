@@ -135,6 +135,8 @@
         }
         .edit-btn { background: #368e4f; color: white; }
         .edit-btn:hover { background: #2d7a42; }
+        .delete-btn { background: #dc2626; color: white; }
+        .delete-btn:hover { background: #b91c1c; }
 
         .modal {
             display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -1083,6 +1085,9 @@
                                         <button class="action-btn edit-btn" onclick="openEditModal(${item.version_id})">
                                             Edit
                                         </button>
+                                        <button class="action-btn delete-btn" onclick="deleteVersion(${item.version_id})">
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             `).join('')}
@@ -1155,6 +1160,33 @@
                 hideGlobalLoading();
             }
         });
+
+        async function deleteVersion(versionId) {
+            if (!confirm('⚠️ Are you sure you want to delete this version?\n\nThis action cannot be undone.')) {
+                return;
+            }
+
+            showGlobalLoading('Deleting version...');
+
+            try {
+                const { error } = await supabase
+                    .from('content_versions')
+                    .delete()
+                    .eq('version_id', versionId);
+
+                if (error) throw error;
+
+                await loadAllData();
+                applyFilters();
+                
+                alert('✅ Version deleted successfully!');
+
+            } catch (error) {
+                alert('❌ Error deleting version: ' + error.message);
+            } finally {
+                hideGlobalLoading();
+            }
+        }
 
         window.addEventListener('load', () => {
             loadDashboard();
