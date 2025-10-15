@@ -13,7 +13,7 @@
             min-height: 100vh;
             color: #333;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -24,7 +24,6 @@
             text-align: center;
         }
         .header h1 { color: #4a5568; font-size: 2.5rem; margin-bottom: 10px; }
-        .header p { color: #718096; font-size: 1.1rem; }
 
         .tabs {
             display: flex;
@@ -44,7 +43,7 @@
             color: white; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
         .tab-content {
-            display: none; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            display: none; background: rgba(255, 255, 255, 0.95);
             border-radius: 15px; padding: 30px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         .tab-content.active { display: block; }
@@ -62,35 +61,18 @@
         input:focus, select:focus, textarea:focus {
             outline: none; border-color: #206d26; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-        
-        .select-with-add {
-            position: relative;
-        }
-        
-        .new-item-fields {
+
+        .new-item-inline {
+            display: none;
             margin-top: 10px;
             padding: 15px;
-            background: #f7fafc;
+            background: #f0fdf4;
+            border: 2px dashed #34d399;
             border-radius: 10px;
-            border: 2px solid #e2e8f0;
         }
-        
-        .new-item-fields input {
+        .new-item-inline.active { display: block; }
+        .new-item-inline input {
             margin-bottom: 10px;
-        }
-        
-        .new-item-fields input:last-of-type {
-            margin-bottom: 15px;
-        }
-        
-        .btn-small {
-            padding: 8px 15px;
-            font-size: 0.9rem;
-        }
-        
-        select option[value="new"] {
-            color: #2f855a;
-            font-weight: bold;
         }
 
         .btn {
@@ -101,27 +83,30 @@
         }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-secondary {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+        }
 
-        .search-container { display: flex; gap: 18px; margin-bottom: 34px; align-items: end; }
-        .search-container > div { flex: 1; }
+        .search-container { display: flex; gap: 18px; margin-bottom: 34px; align-items: end; flex-wrap: wrap; }
+        .search-container > div { flex: 1; min-width: 180px; }
 
         .data-table { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 26px rgba(0, 0, 0, 0.08); }
-        th, td { padding: 16px 18px; text-align: left; border-bottom: 1px solid #eef3f6; vertical-align: middle; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th, td { padding: 16px 18px; text-align: left; border-bottom: 1px solid #eef3f6; }
         th { background: linear-gradient(135deg, #66ea8e 0%, #368e4f 100%); color: white; font-weight: 600; }
-        tbody tr:hover { background-color: #fbfffe; cursor: pointer; }
+        tbody tr:hover { background-color: #f8fafc; }
+        
         .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; text-align: center; display:inline-block; }
-        .status-open { background: #c6f6d5; color: #22543d; border: 1px solid rgba(34,84,61,0.08); }
+        .status-open { background: #c6f6d5; color: #22543d; }
         .status-customization { background: #fef3c7; color: #92400e; }
-        .status-review { background: #dbeafe; color: #1e40af; }
-        .status-ready { background: #c6f6d5; color: #22543d; }
-        .status-not-started { background: #e2e8f0; color: #475569; }
-        .status-close { background: #fed7d7; color: #742a2a; border: 1px solid rgba(116,42,42,0.06); }
+        .status-playback, .status-qa { background: #dbeafe; color: #1e40af; }
+        .status-ready-for-delivery { background: #c6f6d5; color: #22543d; }
+        .status-close { background: #fed7d7; color: #742a2a; }
 
         .loading { text-align: center; padding: 40px; color: #4a5568; }
         .message { padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; }
-        .message.success { background: #c6f6d5; color: #22543d; border: 1px solid #9ae6b4; }
-        .message.error { background: #fed7d7; color: #742a2a; border: 1px solid #fc8181; }
+        .message.success { background: #c6f6d5; color: #22543d; }
+        .message.error { background: #fed7d7; color: #742a2a; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }
@@ -135,7 +120,7 @@
         .global-loader.hidden { display: none; }
         .loader-box {
             background: #fff; padding: 16px 20px; border-radius: 12px; display: flex;
-            gap: 12px; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.25); min-width: 220px;
+            gap: 12px; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
         }
         .spinner {
             width: 28px; height: 28px; border-radius: 50%; border: 4px solid #e6e6e6;
@@ -169,45 +154,28 @@
         }
         .close-btn:hover { color: #368e4f; }
 
-        .select-with-add {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .help-text {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 5px;
         }
 
-        .new-fields {
-            display: none;
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
-            margin-top: 10px;
-        }
-
-        .new-fields.active {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .new-fields input {
-            margin-bottom: 10px;
-        }
-
-        .new-fields button {
-            align-self: flex-start;
+        select option[value="__new__"] {
+            background: #f0fdf4;
+            color: #059669;
+            font-weight: bold;
         }
 
         @media (max-width: 768px) {
-            .form-row, .search-container { grid-template-columns: 1fr; flex-direction: column; }
-            .tabs { flex-direction: column; }
+            .form-row, .search-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Mission Control Pathway Tracker</h1>
+            <h1>🚀 Mission Control Pathway Tracker</h1>
+            <p>Content Version Management System</p>
         </div>
 
         <div id="globalLoader" class="global-loader hidden">
@@ -218,12 +186,12 @@
         </div>
 
         <div class="tabs">
-            <button class="tab-button active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab-button active" onclick="showTab('dashboard')">📊 Dashboard</button>
             <button class="tab-button" onclick="showTab('add')">➕ Add New Entry</button>
-            <button class="tab-button" onclick="showTab('view')">View & Search</button>
+            <button class="tab-button" onclick="showTab('view')">🔍 View & Search</button>
         </div>
 
-        <!-- Dashboard Tab -->
+        <!-- Dashboard -->
         <div id="dashboard" class="tab-content active">
             <h2>Dashboard Overview</h2>
             <div class="stats-grid">
@@ -240,144 +208,152 @@
                     <div class="stat-label">Modules</div>
                 </div>
                 <div class="stat-card">
+                    <div class="stat-number" id="totalClasses">-</div>
+                    <div class="stat-label">Classes</div>
+                </div>
+                <div class="stat-card">
                     <div class="stat-number" id="totalVersions">-</div>
                     <div class="stat-label">Content Versions</div>
                 </div>
             </div>
         </div>
 
-        <!-- Add New Entry Tab (will connect to Supabase later) -->
+        <!-- Add New Entry -->
         <div id="add" class="tab-content">
-            <h2>➕ Add New Entry</h2>
+            <h2>➕ Add New Content Version</h2>
+            <p class="help-text">Select existing entities or create new ones inline as you go</p>
             <div id="addMessage"></div>
             <form id="addForm">
                 <div class="form-row">
+                    <!-- CLIENT -->
                     <div class="form-group">
-                        <label>Client</label>
-                        <div class="select-with-add">
-                            <select id="addClient" required>
-                                <option value="">Select Client</option>
-                                <option value="new">+ Add New Client</option>
-                            </select>
-                            <div id="newClientFields" class="new-fields" style="display: none;">
-                                <input type="text" id="newClientName" placeholder="New Client Name" />
-                                <button type="button" class="btn" onclick="createNewClient()">Add Client</button>
-                            </div>
+                        <label>Client *</label>
+                        <select id="addClient" required>
+                            <option value="">Select Client</option>
+                            <option value="__new__">➕ Create New Client</option>
+                        </select>
+                        <div id="newClientBox" class="new-item-inline">
+                            <input type="text" id="newClientName" placeholder="Client Name" />
+                            <button type="button" class="btn" onclick="createNewClient()">Create Client</button>
                         </div>
                     </div>
+
+                    <!-- PROGRAMME -->
                     <div class="form-group">
-                        <label>Programme</label>
-                        <div class="select-with-add">
-                            <select id="addProgramme" required disabled>
-                                <option value="">Select Client</option>
-                                <option value="new">+ Add New Programme</option>
-                            </select>
-                            <div id="newProgrammeFields" class="new-fields" style="display: none;">
-                                <input type="text" id="newProgrammeName" placeholder="New Programme Name" />
-                                <button type="button" class="btn" onclick="createNewProgramme()">Add Programme</button>
-                            </div>
+                        <label>Programme *</label>
+                        <select id="addProgramme" required disabled>
+                            <option value="">Select Client First</option>
+                        </select>
+                        <div id="newProgrammeBox" class="new-item-inline">
+                            <input type="text" id="newProgrammeName" placeholder="Programme Name" />
+                            <button type="button" class="btn" onclick="createNewProgramme()">Create Programme</button>
                         </div>
                     </div>
+
+                    <!-- MODULE -->
                     <div class="form-group">
-                        <label>Module</label>
-                        <div class="select-with-add">
-                            <select id="addModule" required disabled>
-                                <option value="">Select Programme</option>
-                                <option value="new">+ Add New Module</option>
-                            </select>
-                            <div id="newModuleFields" class="new-fields" style="display: none;">
-                                <input type="text" id="newModuleName" placeholder="New Module Name" />
-                                <input type="number" id="newModuleNumber" placeholder="Module Number" />
-                                <button type="button" class="btn" onclick="createNewModule()">Add Module</button>
-                            </div>
+                        <label>Module *</label>
+                        <select id="addModule" required disabled>
+                            <option value="">Select Programme First</option>
+                        </select>
+                        <div id="newModuleBox" class="new-item-inline">
+                            <input type="text" id="newModuleName" placeholder="Module Name" />
+                            <input type="number" id="newModuleNumber" placeholder="Module Number (e.g., 1)" />
+                            <button type="button" class="btn" onclick="createNewModule()">Create Module</button>
                         </div>
                     </div>
+
+                    <!-- CLASS -->
                     <div class="form-group">
-                        <label>Class</label>
-                        <div class="select-with-add">
-                            <select id="addClass" required disabled>
-                                <option value="">Select Module</option>
-                                <option value="new">+ Add New Class</option>
-                            </select>
-                            <div id="newClassFields" class="new-fields" style="display: none;">
-                                <input type="text" id="newClassName" placeholder="New Class Name" />
-                                <input type="number" id="newClassNumber" placeholder="Class Number" />
-                                <button type="button" class="btn" onclick="createNewClass()">Add Class</button>
-                            </div>
+                        <label>Class *</label>
+                        <select id="addClass" required disabled>
+                            <option value="">Select Module First</option>
+                        </select>
+                        <div id="newClassBox" class="new-item-inline">
+                            <input type="text" id="newClassName" placeholder="Class Name" />
+                            <input type="number" id="newClassNumber" placeholder="Class Number (e.g., 1)" />
+                            <button type="button" class="btn" onclick="createNewClass()">Create Class</button>
                         </div>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Version Code</label>
-                        <input type="text" id="addVersionCode" placeholder="ID-123" required />
+                        <label>Version Code (Auto-generated)</label>
+                        <input type="text" id="addVersionCode" readonly style="background: #f3f4f6;" />
+                        <span class="help-text">Auto-generated: CLIENT-MODULE-CLASS-v#</span>
                     </div>
                     <div class="form-group">
-                        <label>Version Number</label>
-                        <input type="text" id="addVersionNumber" placeholder="v1.0" required />
+                        <label>Version Number *</label>
+                        <input type="text" id="addVersionNumber" readonly value="v1.0" style="background: #f3f4f6;" />
+                        <span class="help-text">Auto-increments based on existing versions</span>
                     </div>
                     <div class="form-group">
-                        <label>Status</label>
-                        <select id="addStatus">
+                        <label>Status *</label>
+                        <select id="addStatus" required>
                             <option>Open</option>
                             <option>Customization</option>
                             <option>Playback</option>
                             <option>QA</option>
                             <option>Ready for Delivery</option>
+                            <option>Close</option>
                         </select>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label>Drive Link</label>
                     <input type="url" id="addDriveLink" placeholder="https://drive.google.com/..." />
                 </div>
+
                 <div class="form-group">
                     <label>Notes</label>
-                    <textarea id="addNotes" rows="3"></textarea>
+                    <textarea id="addNotes" rows="3" placeholder="Any additional notes..."></textarea>
                 </div>
-                <button type="submit" class="btn" style="width:100%">Add Entry</button>
+
+                <button type="submit" class="btn" style="width:100%">Add Content Version</button>
             </form>
         </div>
 
-        <!-- View & Search Tab -->
+        <!-- View & Search -->
         <div id="view" class="tab-content">
-            <h2>View & Search Entries</h2>
+            <h2>🔍 View & Search Content Versions</h2>
             <div class="search-container">
                 <div class="form-group">
-                    <label for="filterClient">Client</label>
+                    <label>Client</label>
                     <select id="filterClient">
                         <option value="">All Clients</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="filterProgramme">Programme</label>
+                    <label>Programme</label>
                     <select id="filterProgramme" disabled>
                         <option value="">Select client first</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="filterModule">Module</label>
+                    <label>Module</label>
                     <select id="filterModule" disabled>
                         <option value="">Select programme first</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="filterStatus">Status</label>
+                    <label>Status</label>
                     <select id="filterStatus">
                         <option value="">All Statuses</option>
-                        <option value="Open">Open</option>
-                        <option value="Close">Close</option>
-                        <option value="Review">Review</option>
-                        <option value="Ready">Ready</option>
+                        <option>Open</option>
+                        <option>Customization</option>
+                        <option>Playback</option>
+                        <option>QA</option>
+                        <option>Ready for Delivery</option>
+                        <option>Close</option>
                     </select>
                 </div>
                 <div>
                     <button class="btn" onclick="applyFilters()">Apply Filters</button>
-                    <button class="btn" onclick="clearFilters()" style="margin-left: 10px;">Clear</button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
                 </div>
             </div>
-
-            <div id="viewMessage"></div>
             <div id="resultsCount" style="margin-bottom: 15px; color: #64748b; font-weight: 600;"></div>
             <div id="dataContainer" class="loading">Select filters and click "Apply Filters"</div>
         </div>
@@ -387,7 +363,7 @@
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Edit Version</h3>
+                <h3>Edit Content Version</h3>
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <div id="modalMessage"></div>
@@ -404,17 +380,17 @@
                 <div class="form-group">
                     <label>Status</label>
                     <select id="editStatus">
-                        <option value="Not Started">Not Started</option>
-                        <option value="Customization">Customization</option>
-                        <option value="Review">Review</option>
-                        <option value="Ready">Ready</option>
-                        <option value="Open">Open</option>
-                        <option value="Close">Close</option>
+                        <option>Open</option>
+                        <option>Customization</option>
+                        <option>Playback</option>
+                        <option>QA</option>
+                        <option>Ready for Delivery</option>
+                        <option>Close</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Drive Link</label>
-                    <input type="url" id="editDriveLink" placeholder="https://...">
+                    <input type="url" id="editDriveLink">
                 </div>
                 <div class="form-group">
                     <label>Notes</label>
@@ -431,216 +407,500 @@
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let allData = [];
-        let currentFilters = {
-            client: null,
-            programme: null,
-            module: null,
-            status: null
+        let currentFilters = { client: null, programme: null, module: null, status: null };
+        
+        // Track newly created IDs during form flow
+        let formState = {
+            clientId: null,
+            programmeId: null,
+            moduleId: null,
+            classId: null
         };
 
-        function showGlobalLoading(message = 'Loading...') {
-            const loader = document.getElementById('globalLoader');
-            if (!loader) return;
-            document.getElementById('globalLoaderMessage').textContent = message;
-            loader.classList.remove('hidden');
+        function showGlobalLoading(msg = 'Loading...') {
+            document.getElementById('globalLoaderMessage').textContent = msg;
+            document.getElementById('globalLoader').classList.remove('hidden');
         }
 
         function hideGlobalLoading() {
-            const loader = document.getElementById('globalLoader');
-            if (!loader) return;
-            loader.classList.add('hidden');
+            document.getElementById('globalLoader').classList.add('hidden');
         }
 
         function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
-            if (event && event.target) event.target.classList.add('active');
+            event.target.classList.add('active');
             if (tabName === 'dashboard') loadDashboard();
+            if (tabName === 'add') setupAddForm();
         }
 
         function showMessage(elementId, message, type = 'success') {
-            const element = document.getElementById(elementId);
-            element.innerHTML = `<div class="message ${type}">${message}</div>`;
-            setTimeout(() => element.innerHTML = '', 5000);
+            const el = document.getElementById(elementId);
+            el.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => el.innerHTML = '', 5000);
         }
 
         async function loadDashboard() {
             showGlobalLoading('Loading dashboard...');
             try {
-                const [clients, programmes, modules, versions] = await Promise.all([
+                const [clients, programmes, modules, classes, versions] = await Promise.all([
                     supabase.from('clients').select('*'),
                     supabase.from('programmes').select('*'),
                     supabase.from('modules').select('*'),
+                    supabase.from('classes').select('*'),
                     supabase.from('content_versions').select('*')
                 ]);
 
                 document.getElementById('totalClients').textContent = clients.data?.length || 0;
                 document.getElementById('totalProgrammes').textContent = programmes.data?.length || 0;
                 document.getElementById('totalModules').textContent = modules.data?.length || 0;
+                document.getElementById('totalClasses').textContent = classes.data?.length || 0;
                 document.getElementById('totalVersions').textContent = versions.data?.length || 0;
 
-                // Populate client dropdown
-                const clientSelect = document.getElementById('filterClient');
-                clientSelect.innerHTML = '<option value="">All Clients</option>';
-                clients.data?.forEach(client => {
-                    const option = document.createElement('option');
-                    option.value = client.client_id;
-                    option.textContent = client.client_name;
-                    clientSelect.appendChild(option);
-                });
-
+                await populateFilterDropdowns();
                 await loadAllData();
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
             } finally {
                 hideGlobalLoading();
             }
         }
 
-        async function populateAddDropdowns() {
-            // Clients
+        async function populateFilterDropdowns() {
             const { data: clients } = await supabase.from('clients').select('*').order('client_name');
-            const clientSel = document.getElementById('addClient');
-            clientSel.innerHTML = `
-                <option value="">Select Client</option>
-                ${clients?.map(c => `<option value="${c.client_id}">${c.client_name}</option>`).join('')}
-                <option value="new">+ Add New Client</option>
-            `;
-
-            clientSel.addEventListener('change', async e => {
-                const id = e.target.value;
-                const progSel = document.getElementById('addProgramme');
-                const modSel = document.getElementById('addModule');
-                const clsSel = document.getElementById('addClass');
-                progSel.innerHTML = '<option value="">Loading...</option>';
-                modSel.innerHTML = '<option value="">Select Programme First</option>';
-                clsSel.innerHTML = '<option value="">Select Module First</option>';
-                modSel.disabled = clsSel.disabled = true;
-
-                const { data } = await supabase
-                    .from('client_pathways')
-                    .select('programme_id, programmes(programme_id, programme_name)')
-                    .eq('client_id', id);
-                progSel.innerHTML = '<option value="">Select Programme</option>';
-                data?.forEach(d => {
-                    const opt = document.createElement('option');
-                    opt.value = d.programmes.programme_id;
-                    opt.textContent = d.programmes.programme_name;
-                    progSel.appendChild(opt);
-                });
-                progSel.disabled = false;
-            });
-
-            document.getElementById('addForm').addEventListener('submit', async e => {
-                e.preventDefault();
-                showGlobalLoading('Adding entry...');
-                
-                // Get selected values
-                const clientId = document.getElementById('addClient').value;
-                const programmeId = document.getElementById('addProgramme').value;
-                const moduleId = document.getElementById('addModule').value;
-                const classId = parseInt(document.getElementById('addClass').value);
-
-                // First, ensure we have a client_pathway
-                const { data: pathway, error: pathwayError } = await supabase
-                    .from('client_pathways')
-                    .select('pathway_id')
-                    .eq('client_id', clientId)
-                    .eq('programme_id', programmeId)
-                    .single();
-
-                if (pathwayError) {
-                    // Create new pathway if it doesn't exist
-                    const { data: newPathway, error: newPathwayError } = await supabase
-                        .from('client_pathways')
-                        .insert({
-                            client_id: clientId,
-                            programme_id: programmeId,
-                            cohort_name: 'Default'  // You might want to make this configurable
-                        })
-                        .select()
-                        .single();
-
-                    if (newPathwayError) {
-                        showMessage('addMessage', '❌ Error creating pathway: ' + newPathwayError.message, 'error');
-                        hideGlobalLoading();
-                        return;
-                    }
-                    pathway_id = newPathway.pathway_id;
-                } else {
-                    pathway_id = pathway.pathway_id;
-                }
-
-                const payload = {
-                    class_id: classId,
-                    pathway_id: pathway_id,
-                    version_number: document.getElementById('addVersionNumber').value.trim(),
-                    status: document.getElementById('addStatus').value,
-                    drive_link: document.getElementById('addDriveLink').value || null,
-                    notes: document.getElementById('addNotes').value || null,
-                    created_by: 'Dashboard User',                
-                };
-
-                // Insert into Supabase
-                const { error } = await supabase.from('content_versions').insert(payload);
-                hideGlobalLoading();
-                if (error) {
-                    showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-                } 
-                else {
-                    showMessage('addMessage', '✅ Added successfully!', 'success');
-                    document.getElementById('addForm').reset();
-                    await loadAllData(); // refresh cache
-                }
-            });
-
-            document.getElementById('addProgramme').addEventListener('change', async e => {
-                const pid = e.target.value;
-                const modSel = document.getElementById('addModule');
-                modSel.innerHTML = '<option value="">Loading...</option>';
-                const { data } = await supabase.from('modules').select('*').eq('programme_id', pid).order('module_number');
-                modSel.innerHTML = '<option value="">Select Module</option>';
-                data?.forEach(m => {
-                    const opt = document.createElement('option');
-                    opt.value = m.module_id;
-                    opt.textContent = m.module_name;
-                    modSel.appendChild(opt);
-                });
-                modSel.disabled = false;
-            });
-
-            document.getElementById('addModule').addEventListener('change', async e => {
-                const mid = e.target.value;
-                const clsSel = document.getElementById('addClass');
-                clsSel.innerHTML = '<option value="">Loading...</option>';
-                const { data } = await supabase.from('classes').select('*').eq('module_id', mid).order('class_number');
-                clsSel.innerHTML = '<option value="">Select Class</option>';
-                data?.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.class_id;
-                    opt.textContent = c.class_name;
-                    clsSel.appendChild(opt);
-                });
-                clsSel.disabled = false;
-            });
-
-            document.getElementById('addModule').addEventListener('change', async e => {
-                const mid = e.target.value;
-                const clsSel = document.getElementById('addClass');
-                clsSel.innerHTML = '<option value="">Loading...</option>';
-                const { data } = await supabase.from('classes').select('*').eq('module_id', mid).order('class_number');
-                clsSel.innerHTML = '<option value="">Select Class</option>';
-                data?.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c.class_id;
-                    opt.textContent = c.class_name;
-                    clsSel.appendChild(opt);
-                });
-                clsSel.disabled = false;
+            const sel = document.getElementById('filterClient');
+            sel.innerHTML = '<option value="">All Clients</option>';
+            clients?.forEach(c => {
+                sel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
             });
         }
 
+        async function setupAddForm() {
+            // Load clients
+            const { data: clients } = await supabase.from('clients').select('*').order('client_name');
+            const clientSel = document.getElementById('addClient');
+            clientSel.innerHTML = '<option value="">Select Client</option>';
+            clients?.forEach(c => {
+                clientSel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
+            });
+            clientSel.innerHTML += '<option value="__new__">➕ Create New Client</option>';
+
+            // Client change handler
+            clientSel.onchange = async (e) => {
+                const val = e.target.value;
+                const progSel = document.getElementById('addProgramme');
+                const newBox = document.getElementById('newClientBox');
+                
+                // Show/hide new client box
+                newBox.classList.toggle('active', val === '__new__');
+                
+                if (val && val !== '__new__') {
+                    formState.clientId = val;
+                    
+                    // Load programmes for this client
+                    const { data } = await supabase
+                        .from('client_pathways')
+                        .select('programme_id, programmes(programme_id, programme_name)')
+                        .eq('client_id', val);
+                    
+                    progSel.innerHTML = '<option value="">Select Programme</option>';
+                    data?.forEach(p => {
+                        if (p.programmes) {
+                            progSel.innerHTML += `<option value="${p.programmes.programme_id}">${p.programmes.programme_name}</option>`;
+                        }
+                    });
+                    progSel.innerHTML += '<option value="__new__">➕ Create New Programme</option>';
+                    progSel.disabled = false;
+                } else {
+                    progSel.disabled = true;
+                    progSel.innerHTML = '<option value="">Select Client First</option>';
+                }
+                
+                // Reset downstream
+                document.getElementById('addModule').disabled = true;
+                document.getElementById('addClass').disabled = true;
+                generateVersionCode();
+            };
+
+            // Programme change handler
+            document.getElementById('addProgramme').onchange = async (e) => {
+                const val = e.target.value;
+                const modSel = document.getElementById('addModule');
+                const newBox = document.getElementById('newProgrammeBox');
+                
+                newBox.classList.toggle('active', val === '__new__');
+                
+                if (val && val !== '__new__') {
+                    formState.programmeId = val;
+                    
+                    const { data } = await supabase
+                        .from('modules')
+                        .select('*')
+                        .eq('programme_id', val)
+                        .order('module_number');
+                    
+                    modSel.innerHTML = '<option value="">Select Module</option>';
+                    data?.forEach(m => {
+                        modSel.innerHTML += `<option value="${m.module_id}">${m.module_name}</option>`;
+                    });
+                    modSel.innerHTML += '<option value="__new__">➕ Create New Module</option>';
+                    modSel.disabled = false;
+                } else {
+                    modSel.disabled = true;
+                    modSel.innerHTML = '<option value="">Select Programme First</option>';
+                }
+                
+                document.getElementById('addClass').disabled = true;
+                generateVersionCode();
+            };
+
+            // Module change handler
+            document.getElementById('addModule').onchange = async (e) => {
+                const val = e.target.value;
+                const clsSel = document.getElementById('addClass');
+                const newBox = document.getElementById('newModuleBox');
+                
+                newBox.classList.toggle('active', val === '__new__');
+                
+                if (val && val !== '__new__') {
+                    formState.moduleId = val;
+                    
+                    const { data } = await supabase
+                        .from('classes')
+                        .select('*')
+                        .eq('module_id', val)
+                        .order('class_number');
+                    
+                    clsSel.innerHTML = '<option value="">Select Class</option>';
+                    data?.forEach(c => {
+                        clsSel.innerHTML += `<option value="${c.class_id}">${c.class_name}</option>`;
+                    });
+                    clsSel.innerHTML += '<option value="__new__">➕ Create New Class</option>';
+                    clsSel.disabled = false;
+                } else {
+                    clsSel.disabled = true;
+                    clsSel.innerHTML = '<option value="">Select Module First</option>';
+                }
+                generateVersionCode();
+            };
+
+            // Class change handler
+            document.getElementById('addClass').onchange = (e) => {
+                const val = e.target.value;
+                const newBox = document.getElementById('newClassBox');
+                newBox.classList.toggle('active', val === '__new__');
+                
+                if (val && val !== '__new__') {
+                    formState.classId = val;
+                }
+                generateVersionCode();
+            };
+
+            // Form submit
+            document.getElementById('addForm').onsubmit = async (e) => {
+                e.preventDefault();
+                
+                if (!formState.classId || !formState.clientId || !formState.programmeId) {
+                    showMessage('addMessage', '❌ Please complete all required fields', 'error');
+                    return;
+                }
+
+                showGlobalLoading('Creating content version...');
+                
+                try {
+                    // Ensure client_pathway exists
+                    let { data: pathway } = await supabase
+                        .from('client_pathways')
+                        .select('pathway_id')
+                        .eq('client_id', formState.clientId)
+                        .eq('programme_id', formState.programmeId)
+                        .maybeSingle();
+                    
+                    if (!pathway) {
+                        const { data: newPathway, error: pathError } = await supabase
+                            .from('client_pathways')
+                            .insert({
+                                client_id: formState.clientId,
+                                programme_id: formState.programmeId,
+                                cohort_name: 'Default',
+                                status: 'Active'
+                            })
+                            .select()
+                            .single();
+                        
+                        if (pathError) throw pathError;
+                        pathway = newPathway;
+                    }
+
+                    // Insert content version
+                    const { error } = await supabase.from('content_versions').insert({
+                        class_id: formState.classId,
+                        pathway_id: pathway.pathway_id,
+                        version_code: document.getElementById('addVersionCode').value,
+                        version_number: document.getElementById('addVersionNumber').value,
+                        status: document.getElementById('addStatus').value,
+                        drive_link: document.getElementById('addDriveLink').value || null,
+                        notes: document.getElementById('addNotes').value || null,
+                        created_by: 'Dashboard User'
+                    });
+
+                    if (error) throw error;
+
+                    showMessage('addMessage', '✅ Content version created successfully!', 'success');
+                    document.getElementById('addForm').reset();
+                    formState = { clientId: null, programmeId: null, moduleId: null, classId: null };
+                    await loadAllData();
+                    
+                    // Reset form
+                    document.getElementById('addProgramme').disabled = true;
+                    document.getElementById('addModule').disabled = true;
+                    document.getElementById('addClass').disabled = true;
+
+                } catch (error) {
+                    showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+                } finally {
+                    hideGlobalLoading();
+                }
+            };
+        }
+
+        async function generateVersionCode() {
+            const clientSel = document.getElementById('addClient');
+            const moduleSel = document.getElementById('addModule');
+            const classSel = document.getElementById('addClass');
+            const codeInput = document.getElementById('addVersionCode');
+            const versionNumInput = document.getElementById('addVersionNumber');
+
+            const clientVal = clientSel.value;
+            const moduleVal = moduleSel.value;
+            const classVal = classSel.value;
+
+            if (!clientVal || clientVal === '__new__' || 
+                !moduleVal || moduleVal === '__new__' || 
+                !classVal || classVal === '__new__') {
+                codeInput.value = '';
+                versionNumInput.value = 'v1.0';
+                return;
+            }
+
+            const clientText = clientSel.options[clientSel.selectedIndex].text;
+            const moduleText = moduleSel.options[moduleSel.selectedIndex].text;
+            const classText = classSel.options[classSel.selectedIndex].text;
+
+            // Get existing versions for this specific class + pathway combination
+            const { data: existing } = await supabase
+                .from('content_versions')
+                .select('version_code, version_number, version_id')
+                .eq('class_id', classVal)
+                .eq('pathway_id', await getCurrentPathwayId())
+                .order('created_at', { ascending: false });
+
+            const versionCount = (existing?.length || 0) + 1;
+            
+            // Generate base code (without version number)
+            const baseCode = `${clientText.substring(0, 3).toUpperCase()}-${
+                moduleText.substring(0, 3).toUpperCase()}-${
+                classText.substring(0, 3).toUpperCase()}`.replace(/\s/g, '');
+            
+            // Full version code with incremental version
+            const fullCode = `${baseCode}-v${versionCount}`;
+            
+            codeInput.value = fullCode;
+            versionNumInput.value = `v${versionCount}.0`;
+        }
+
+        async function getCurrentPathwayId() {
+            if (!formState.clientId || !formState.programmeId) return null;
+            
+            const { data } = await supabase
+                .from('client_pathways')
+                .select('pathway_id')
+                .eq('client_id', formState.clientId)
+                .eq('programme_id', formState.programmeId)
+                .maybeSingle();
+            
+            return data?.pathway_id || null;
+        }
+
+        // CREATE NEW ENTITIES
+        async function createNewClient() {
+            const name = document.getElementById('newClientName').value.trim();
+            if (!name) {
+                showMessage('addMessage', '❌ Please enter a client name', 'error');
+                return;
+            }
+
+            showGlobalLoading('Creating client...');
+            try {
+                const { data, error } = await supabase
+                    .from('clients')
+                    .insert({ client_name: name })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Add to dropdown and select it
+                const sel = document.getElementById('addClient');
+                const newOpt = document.createElement('option');
+                newOpt.value = data.client_id;
+                newOpt.textContent = data.client_name;
+                sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
+                sel.value = data.client_id;
+
+                // Hide box and trigger change
+                document.getElementById('newClientBox').classList.remove('active');
+                document.getElementById('newClientName').value = '';
+                sel.dispatchEvent(new Event('change'));
+
+                showMessage('addMessage', '✅ Client created!', 'success');
+            } catch (error) {
+                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+            } finally {
+                hideGlobalLoading();
+            }
+        }
+
+        async function createNewProgramme() {
+            const name = document.getElementById('newProgrammeName').value.trim();
+            if (!name || !formState.clientId) {
+                showMessage('addMessage', '❌ Please select a client and enter programme name', 'error');
+                return;
+            }
+
+            showGlobalLoading('Creating programme...');
+            try {
+                // Create programme
+                const { data: prog, error: progErr } = await supabase
+                    .from('programmes')
+                    .insert({ programme_name: name, programme_type: 'Standard' })
+                    .select()
+                    .single();
+
+                if (progErr) throw progErr;
+
+                // Create client_pathway
+                const { error: pathErr } = await supabase
+                    .from('client_pathways')
+                    .insert({
+                        client_id: formState.clientId,
+                        programme_id: prog.programme_id,
+                        cohort_name: 'Default',
+                        status: 'Active'
+                    });
+
+                if (pathErr) throw pathErr;
+
+                // Add to dropdown and select it
+                const sel = document.getElementById('addProgramme');
+                const newOpt = document.createElement('option');
+                newOpt.value = prog.programme_id;
+                newOpt.textContent = prog.programme_name;
+                sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
+                sel.value = prog.programme_id;
+
+                // Hide box and trigger change
+                document.getElementById('newProgrammeBox').classList.remove('active');
+                document.getElementById('newProgrammeName').value = '';
+                sel.dispatchEvent(new Event('change'));
+
+                showMessage('addMessage', '✅ Programme created!', 'success');
+            } catch (error) {
+                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+            } finally {
+                hideGlobalLoading();
+            }
+        }
+
+        async function createNewModule() {
+            const name = document.getElementById('newModuleName').value.trim();
+            const num = document.getElementById('newModuleNumber').value;
+            if (!name || !num || !formState.programmeId) {
+                showMessage('addMessage', '❌ Please enter all module details', 'error');
+                return;
+            }
+
+            showGlobalLoading('Creating module...');
+            try {
+                const { data, error } = await supabase
+                    .from('modules')
+                    .insert({
+                        module_name: name,
+                        module_number: parseInt(num),
+                        programme_id: formState.programmeId
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Add to dropdown and select it
+                const sel = document.getElementById('addModule');
+                const newOpt = document.createElement('option');
+                newOpt.value = data.module_id;
+                newOpt.textContent = data.module_name;
+                sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
+                sel.value = data.module_id;
+
+                // Hide box and trigger change
+                document.getElementById('newModuleBox').classList.remove('active');
+                document.getElementById('newModuleName').value = '';
+                document.getElementById('newModuleNumber').value = '';
+                sel.dispatchEvent(new Event('change'));
+
+                showMessage('addMessage', '✅ Module created!', 'success');
+            } catch (error) {
+                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+            } finally {
+                hideGlobalLoading();
+            }
+        }
+
+        async function createNewClass() {
+            const name = document.getElementById('newClassName').value.trim();
+            const num = document.getElementById('newClassNumber').value;
+            if (!name || !num || !formState.moduleId) {
+                showMessage('addMessage', '❌ Please enter all class details', 'error');
+                return;
+            }
+
+            showGlobalLoading('Creating class...');
+            try {
+                const { data, error } = await supabase
+                    .from('classes')
+                    .insert({
+                        class_name: name,
+                        class_number: parseInt(num),
+                        module_id: formState.moduleId,
+                        material_type: 'Slide Deck'
+                    })
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                // Add to dropdown and select it
+                const sel = document.getElementById('addClass');
+                const newOpt = document.createElement('option');
+                newOpt.value = data.class_id;
+                newOpt.textContent = data.class_name;
+                sel.insertBefore(newOpt, sel.querySelector('option[value="__new__"]'));
+                sel.value = data.class_id;
+
+                // Hide box and trigger change
+                document.getElementById('newClassBox').classList.remove('active');
+                document.getElementById('newClassName').value = '';
+                document.getElementById('newClassNumber').value = '';
+                sel.dispatchEvent(new Event('change'));
+
+                showMessage('addMessage', '✅ Class created!', 'success');
+            } catch (error) {
+                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
+            } finally {
+                hideGlobalLoading();
+            }
+        }
+
+        // VIEW & SEARCH
         async function loadAllData() {
             try {
                 const { data, error } = await supabase
@@ -661,6 +921,7 @@
                         client_pathways (
                             cohort_name,
                             clients (
+                                client_id,
                                 client_name
                             )
                         )
@@ -668,7 +929,7 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-                allData = data;
+                allData = data || [];
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -678,14 +939,14 @@
             const clientId = e.target.value;
             currentFilters.client = clientId || null;
             
-            const progSelect = document.getElementById('filterProgramme');
-            const modSelect = document.getElementById('filterModule');
+            const progSel = document.getElementById('filterProgramme');
+            const modSel = document.getElementById('filterModule');
 
             if (!clientId) {
-                progSelect.disabled = true;
-                progSelect.innerHTML = '<option value="">Select client first</option>';
-                modSelect.disabled = true;
-                modSelect.innerHTML = '<option value="">Select programme first</option>';
+                progSel.disabled = true;
+                progSel.innerHTML = '<option value="">Select client first</option>';
+                modSel.disabled = true;
+                modSel.innerHTML = '<option value="">Select programme first</option>';
                 return;
             }
 
@@ -694,33 +955,30 @@
                 .select('programme_id, programmes(programme_id, programme_name)')
                 .eq('client_id', clientId);
 
-            progSelect.disabled = false;
-            progSelect.innerHTML = '<option value="">All Programmes</option>';
+            progSel.disabled = false;
+            progSel.innerHTML = '<option value="">All Programmes</option>';
             
-            const uniqueProgrammes = [...new Map(data.map(item => 
-                [item.programmes.programme_id, item.programmes]
-            )).values()];
+            const uniqueProgs = [...new Map(data?.map(item => 
+                [item.programmes?.programme_id, item.programmes]
+            ).filter(([k, v]) => v)).values()];
 
-            uniqueProgrammes.forEach(prog => {
-                const option = document.createElement('option');
-                option.value = prog.programme_id;
-                option.textContent = prog.programme_name;
-                progSelect.appendChild(option);
+            uniqueProgs.forEach(p => {
+                progSel.innerHTML += `<option value="${p.programme_id}">${p.programme_name}</option>`;
             });
 
-            modSelect.disabled = true;
-            modSelect.innerHTML = '<option value="">Select programme first</option>';
+            modSel.disabled = true;
+            modSel.innerHTML = '<option value="">Select programme first</option>';
         });
 
         document.getElementById('filterProgramme').addEventListener('change', async (e) => {
             const programmeId = e.target.value;
             currentFilters.programme = programmeId || null;
             
-            const modSelect = document.getElementById('filterModule');
+            const modSel = document.getElementById('filterModule');
 
             if (!programmeId) {
-                modSelect.disabled = true;
-                modSelect.innerHTML = '<option value="">Select programme first</option>';
+                modSel.disabled = true;
+                modSel.innerHTML = '<option value="">Select programme first</option>';
                 return;
             }
 
@@ -730,14 +988,11 @@
                 .eq('programme_id', programmeId)
                 .order('module_number');
 
-            modSelect.disabled = false;
-            modSelect.innerHTML = '<option value="">All Modules</option>';
+            modSel.disabled = false;
+            modSel.innerHTML = '<option value="">All Modules</option>';
             
-            data.forEach(mod => {
-                const option = document.createElement('option');
-                option.value = mod.module_id;
-                option.textContent = mod.module_name;
-                modSelect.appendChild(option);
+            data?.forEach(m => {
+                modSel.innerHTML += `<option value="${m.module_id}">${m.module_name}</option>`;
             });
         });
 
@@ -750,7 +1005,7 @@
         });
 
         function applyFilters() {
-            let filtered = allData;
+            let filtered = [...allData];
 
             if (currentFilters.client) {
                 filtered = filtered.filter(item => 
@@ -760,20 +1015,18 @@
 
             if (currentFilters.programme) {
                 filtered = filtered.filter(item => 
-                    item.classes?.modules?.programme_id == currentFilters.programme
+                    item.classes?.modules?.programmes?.programme_id == currentFilters.programme
                 );
             }
 
             if (currentFilters.module) {
                 filtered = filtered.filter(item => 
-                    item.classes?.module_id == currentFilters.module
+                    item.classes?.modules?.module_id == currentFilters.module
                 );
             }
 
             if (currentFilters.status) {
-                filtered = filtered.filter(item => 
-                    item.status === currentFilters.status
-                );
+                filtered = filtered.filter(item => item.status === currentFilters.status);
             }
 
             displayResults(filtered);
@@ -874,8 +1127,7 @@
                 status: document.getElementById('editStatus').value,
                 drive_link: document.getElementById('editDriveLink').value || null,
                 notes: document.getElementById('editNotes').value || null,
-                updated_at: new Date().toISOString(),
-                updated_by: 'Dashboard User'
+                updated_at: new Date().toISOString()
             };
 
             showGlobalLoading('Saving changes...');
@@ -897,7 +1149,6 @@
                 }, 1500);
 
             } catch (error) {
-                console.error('Error updating:', error);
                 document.getElementById('modalMessage').innerHTML = 
                     '<div class="message error">❌ Error: ' + error.message + '</div>';
             } finally {
@@ -905,475 +1156,9 @@
             }
         });
 
-        // Handle showing/hiding new item fields
-        document.getElementById('addClient').addEventListener('change', e => {
-            document.getElementById('newClientFields').style.display = 
-                e.target.value === 'new' ? 'flex' : 'none';
-        });
-
-        document.getElementById('addProgramme').addEventListener('change', e => {
-            document.getElementById('newProgrammeFields').style.display = 
-                e.target.value === 'new' ? 'flex' : 'none';
-        });
-
-        document.getElementById('addModule').addEventListener('change', e => {
-            document.getElementById('newModuleFields').style.display = 
-                e.target.value === 'new' ? 'flex' : 'none';
-        });
-
-        document.getElementById('addClass').addEventListener('change', e => {
-            document.getElementById('newClassFields').style.display = 
-                e.target.value === 'new' ? 'flex' : 'none';
-        });
-
-        // Functions to create new items
-        async function createNewClient() {
-            const clientName = document.getElementById('newClientName').value.trim();
-            if (!clientName) {
-                showMessage('addMessage', '❌ Please enter a client name', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new client...');
-            try {
-                const { data, error } = await supabase
-                    .from('clients')
-                    .insert({ client_name: clientName })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                // Add to dropdown and select it
-                const option = document.createElement('option');
-                option.value = data.client_id;
-                option.textContent = data.client_name;
-                
-                const select = document.getElementById('addClient');
-                select.insertBefore(option, select.children[1]); // Insert before "Add New"
-                select.value = data.client_id;
-                
-                document.getElementById('newClientFields').style.display = 'none';
-                document.getElementById('newClientName').value = '';
-                
-                showMessage('addMessage', '✅ Client created successfully!', 'success');
-                
-                // Trigger change event to enable programme dropdown
-                select.dispatchEvent(new Event('change'));
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        async function createNewProgramme() {
-            const programmeName = document.getElementById('newProgrammeName').value.trim();
-            const clientId = document.getElementById('addClient').value;
-            
-            if (!programmeName || clientId === 'new' || !clientId) {
-                showMessage('addMessage', '❌ Please select a client and enter a programme name', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new programme...');
-            try {
-                // 1. Create programme
-                const { data: prog, error: progError } = await supabase
-                    .from('programmes')
-                    .insert({ 
-                        programme_name: programmeName,
-                        programme_type: 'Standard'
-                    })
-                    .select()
-                    .single();
-
-                if (progError) throw progError;
-
-                // 2. Create client pathway
-                const { error: pathError } = await supabase
-                    .from('client_pathways')
-                    .insert({
-                        client_id: clientId,
-                        programme_id: prog.programme_id,
-                        cohort_name: 'Default'
-                    });
-
-                if (pathError) throw pathError;
-
-                // Add to dropdown and select it
-                const option = document.createElement('option');
-                option.value = prog.programme_id;
-                option.textContent = prog.programme_name;
-                
-                const select = document.getElementById('addProgramme');
-                select.insertBefore(option, select.children[1]); // Insert before "Add New"
-                select.value = prog.programme_id;
-                
-                document.getElementById('newProgrammeFields').style.display = 'none';
-                document.getElementById('newProgrammeName').value = '';
-                
-                showMessage('addMessage', '✅ Programme created successfully!', 'success');
-                
-                // Trigger change event to enable module dropdown
-                select.dispatchEvent(new Event('change'));
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        async function createNewModule() {
-            const moduleName = document.getElementById('newModuleName').value.trim();
-            const moduleNumber = document.getElementById('newModuleNumber').value;
-            const programmeId = document.getElementById('addProgramme').value;
-            
-            if (!moduleName || !moduleNumber || programmeId === 'new' || !programmeId) {
-                showMessage('addMessage', '❌ Please fill in all module details', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new module...');
-            try {
-                const { data, error } = await supabase
-                    .from('modules')
-                    .insert({
-                        module_name: moduleName,
-                        module_number: parseInt(moduleNumber),
-                        programme_id: programmeId
-                    })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                // Add to dropdown and select it
-                const option = document.createElement('option');
-                option.value = data.module_id;
-                option.textContent = data.module_name;
-                
-                const select = document.getElementById('addModule');
-                select.insertBefore(option, select.children[1]); // Insert before "Add New"
-                select.value = data.module_id;
-                
-                document.getElementById('newModuleFields').style.display = 'none';
-                document.getElementById('newModuleName').value = '';
-                document.getElementById('newModuleNumber').value = '';
-                
-                showMessage('addMessage', '✅ Module created successfully!', 'success');
-                
-                // Trigger change event to enable class dropdown
-                select.dispatchEvent(new Event('change'));
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        async function createNewClass() {
-            const className = document.getElementById('newClassName').value.trim();
-            const classNumber = document.getElementById('newClassNumber').value;
-            const moduleId = document.getElementById('addModule').value;
-            
-            if (!className || !classNumber || moduleId === 'new' || !moduleId) {
-                showMessage('addMessage', '❌ Please fill in all class details', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new class...');
-            try {
-                const { data, error } = await supabase
-                    .from('classes')
-                    .insert({
-                        class_name: className,
-                        class_number: parseInt(classNumber),
-                        module_id: moduleId
-                    })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                // Add to dropdown and select it
-                const option = document.createElement('option');
-                option.value = data.class_id;
-                option.textContent = data.class_name;
-                
-                const select = document.getElementById('addClass');
-                select.insertBefore(option, select.children[1]); // Insert before "Add New"
-                select.value = data.class_id;
-                
-                document.getElementById('newClassFields').style.display = 'none';
-                document.getElementById('newClassName').value = '';
-                document.getElementById('newClassNumber').value = '';
-                
-                showMessage('addMessage', '✅ Class created successfully!', 'success');
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        function generateVersionCode() {
-            const client = document.getElementById('addClient');
-            const module = document.getElementById('addModule');
-            const classSelect = document.getElementById('addClass');
-
-            if (client.value && client.value !== 'new' &&
-                module.value && module.value !== 'new' &&
-                classSelect.value && classSelect.value !== 'new') {
-                
-                const clientName = client.options[client.selectedIndex].text;
-                const moduleName = module.options[module.selectedIndex].text;
-                const className = classSelect.options[classSelect.selectedIndex].text;
-                
-                const versionCode = `${clientName.substring(0, 3).toUpperCase()}-${
-                    moduleName.substring(0, 3).toUpperCase()}-${
-                    className.substring(0, 3).toUpperCase()}-v1`.replace(/\s/g, '');
-                
-                document.getElementById('addVersionCode').value = versionCode;
-            }
-        }
-
-        // Add change event listeners for version code generation
-        ['addClient', 'addModule', 'addClass'].forEach(id => {
-            document.getElementById(id).addEventListener('change', generateVersionCode);
-        });
-
-        // Show/hide new item fields when dropdowns change
-        document.getElementById('addClient').addEventListener('change', function(e) {
-            document.getElementById('newClientFields').style.display = 
-                e.target.value === 'new' ? 'block' : 'none';
-        });
-
-        document.getElementById('addProgramme').addEventListener('change', function(e) {
-            document.getElementById('newProgrammeFields').style.display = 
-                e.target.value === 'new' ? 'block' : 'none';
-        });
-
-        document.getElementById('addModule').addEventListener('change', function(e) {
-            document.getElementById('newModuleFields').style.display = 
-                e.target.value === 'new' ? 'block' : 'none';
-        });
-
-        document.getElementById('addClass').addEventListener('change', function(e) {
-            document.getElementById('newClassFields').style.display = 
-                e.target.value === 'new' ? 'block' : 'none';
-        });
-
-        async function createNewClient() {
-            const clientName = document.getElementById('newClientName').value.trim();
-            if (!clientName) {
-                showMessage('addMessage', '❌ Please enter a client name', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new client...');
-            try {
-                const { data, error } = await supabase
-                    .from('clients')
-                    .insert({ client_name: clientName })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                // Add to dropdown and select it
-                const select = document.getElementById('addClient');
-                const option = document.createElement('option');
-                option.value = data.client_id;
-                option.textContent = data.client_name;
-                
-                // Insert before the "Add New" option
-                select.insertBefore(option, select.lastElementChild);
-                select.value = data.client_id;
-                
-                // Hide the new client fields
-                document.getElementById('newClientFields').style.display = 'none';
-                document.getElementById('newClientName').value = '';
-                
-                showMessage('addMessage', '✅ Client created successfully!', 'success');
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        async function createNewProgramme() {
-            const programmeName = document.getElementById('newProgrammeName').value.trim();
-            const programmeType = document.getElementById('newProgrammeType').value.trim();
-            const clientId = document.getElementById('addClient').value;
-
-            if (!programmeName || clientId === 'new' || !clientId) {
-                showMessage('addMessage', '❌ Please select a client and enter programme details', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new programme...');
-            try {
-                // Create the programme first
-                const { data: programme, error: progError } = await supabase
-                    .from('programmes')
-                    .insert({
-                        programme_name: programmeName,
-                        programme_type: programmeType || 'Standard'
-                    })
-                    .select()
-                    .single();
-
-                if (progError) throw progError;
-
-                // Create the client pathway
-                const { error: pathwayError } = await supabase
-                    .from('client_pathways')
-                    .insert({
-                        client_id: clientId,
-                        programme_id: programme.programme_id,
-                        cohort_name: 'Default'
-                    });
-
-                if (pathwayError) throw pathwayError;
-
-                // Add to dropdown and select it
-                const select = document.getElementById('addProgramme');
-                const option = document.createElement('option');
-                option.value = programme.programme_id;
-                option.textContent = programme.programme_name;
-                
-                // Insert before the "Add New" option
-                select.insertBefore(option, select.lastElementChild);
-                select.value = programme.programme_id;
-                
-                // Hide the new programme fields
-                document.getElementById('newProgrammeFields').style.display = 'none';
-                document.getElementById('newProgrammeName').value = '';
-                document.getElementById('newProgrammeType').value = 'Standard';
-                
-                showMessage('addMessage', '✅ Programme created successfully!', 'success');
-
-                // Enable modules dropdown
-                document.getElementById('addModule').disabled = false;
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        async function createNewModule() {
-            const moduleName = document.getElementById('newModuleName').value.trim();
-            const moduleNumber = document.getElementById('newModuleNumber').value;
-            const programmeId = document.getElementById('addProgramme').value;
-
-            if (!moduleName || !moduleNumber || programmeId === 'new' || !programmeId) {
-                showMessage('addMessage', '❌ Please enter all module details', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new module...');
-            try {
-                const { data: module, error } = await supabase
-                    .from('modules')
-                    .insert({
-                        module_name: moduleName,
-                        module_number: parseInt(moduleNumber),
-                        programme_id: programmeId
-                    })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                // Add to dropdown and select it
-                const select = document.getElementById('addModule');
-                const option = document.createElement('option');
-                option.value = module.module_id;
-                option.textContent = module.module_name;
-                
-                // Insert before the "Add New" option
-                select.insertBefore(option, select.lastElementChild);
-                select.value = module.module_id;
-                
-                // Hide the new module fields
-                document.getElementById('newModuleFields').style.display = 'none';
-                document.getElementById('newModuleName').value = '';
-                document.getElementById('newModuleNumber').value = '';
-                
-                showMessage('addMessage', '✅ Module created successfully!', 'success');
-
-                // Enable classes dropdown
-                document.getElementById('addClass').disabled = false;
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
-        async function createNewClass() {
-            const className = document.getElementById('newClassName').value.trim();
-            const classNumber = document.getElementById('newClassNumber').value;
-            const moduleId = document.getElementById('addModule').value;
-
-            if (!className || !classNumber || moduleId === 'new' || !moduleId) {
-                showMessage('addMessage', '❌ Please enter all class details', 'error');
-                return;
-            }
-
-            showGlobalLoading('Creating new class...');
-            try {
-                const { data: classData, error } = await supabase
-                    .from('classes')
-                    .insert({
-                        class_name: className,
-                        class_number: parseInt(classNumber),
-                        module_id: moduleId
-                    })
-                    .select()
-                    .single();
-
-                if (error) throw error;
-
-                // Add to dropdown and select it
-                const select = document.getElementById('addClass');
-                const option = document.createElement('option');
-                option.value = classData.class_id;
-                option.textContent = classData.class_name;
-                
-                // Insert before the "Add New" option
-                select.insertBefore(option, select.lastElementChild);
-                select.value = classData.class_id;
-                
-                // Hide the new class fields
-                document.getElementById('newClassFields').style.display = 'none';
-                document.getElementById('newClassName').value = '';
-                document.getElementById('newClassNumber').value = '';
-                
-                showMessage('addMessage', '✅ Class created successfully!', 'success');
-
-            } catch (error) {
-                showMessage('addMessage', '❌ Error: ' + error.message, 'error');
-            } finally {
-                hideGlobalLoading();
-            }
-        }
-
         window.addEventListener('load', () => {
             loadDashboard();
-            populateAddDropdowns();
         });
-        
     </script>
 </body>
 </html>
