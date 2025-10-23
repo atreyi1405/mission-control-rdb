@@ -90,9 +90,9 @@
         .search-container > div { flex: 1; min-width: 180px; }
 
         .data-table { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
-        th, td { padding: 16px 18px; text-align: left; border-bottom: 1px solid #eef3f6; }
-        th { background: linear-gradient(135deg, #66ea8e 0%, #368e4f 100%); color: white; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; font-size: 0.9rem; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #eef3f6; white-space: nowrap; }
+        th { background: linear-gradient(135deg, #66ea8e 0%, #368e4f 100%); color: white; font-weight: 600; font-size: 0.85rem; }
         tbody tr:hover { background-color: #f8fafc; }
         
         .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.9rem; font-weight: 700; text-align: center; display:inline-block; }
@@ -166,6 +166,36 @@
             margin-top: 5px;
         }
 
+        .filter-tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab:hover {
+            color: #368e4f;
+        }
+
+        .filter-tab.active {
+            color: #368e4f;
+            border-bottom-color: #368e4f;
+        }
+
+        .filter-mode-content {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .filter-mode-content.active {
+            display: block;
+        }
+
         select option[value="__new__"] {
             background: #f0fdf4;
             color: #059669;
@@ -192,9 +222,9 @@
         </div>
 
         <div class="tabs">
-        <button class="tab-button active" onclick="showTab('dashboard')">📊 Dashboard</button>
-        <button class="tab-button" onclick="showTab('add')">➕ Add New Entry</button>
-        <button class="tab-button" onclick="showTab('view')">🔍 View & Search</button>
+        <button class="tab-button active" onclick="showTab('dashboard')">Dashboard</button>
+        <button class="tab-button" onclick="showTab('add')">Add New Entry</button>
+        <button class="tab-button" onclick="showTab('view')">View & Search</button>
     </div>
 
     <!-- Dashboard -->
@@ -236,7 +266,7 @@
                     <label>Client *</label>
                     <select id="addClient" required>
                         <option value="">Select Client</option>
-                        <option value="__new__">➕ Create New Client</option>
+                        <option value="__new__">Create New Client</option>
                     </select>
                     <div id="newClientBox" class="new-item-inline">
                         <input type="text" id="newClientName" placeholder="Client Name" />
@@ -355,59 +385,106 @@
     <!-- View & Search -->
     <div id="view" class="tab-content">
         <h2>View & Search Content Versions</h2>
-        <div class="search-container">
-            <div class="form-group">
-                <label>Client</label>
-                <select id="filterClient">
-                    <option value="">All Clients</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Programme</label>
-                <select id="filterProgramme" disabled>
-                    <option value="">Select client first</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Module</label>
-                <select id="filterModule" disabled>
-                    <option value="">Select programme first</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Status</label>
-                <select id="filterStatus">
-                    <option value="">All Statuses</option>
-                    <option>Open</option>
-                    <option>Customization</option>
-                    <option>Playback</option>
-                    <option>QA</option>
-                    <option>Ready for Delivery</option>
-                    <option>Close</option>
-                </select>
+        
+        <!-- Filters Section -->
+        <div style="margin-bottom: 30px;">
+            <!-- Filter Mode Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0;">
+                <button id="drillDownTab" class="filter-tab active" onclick="switchFilterMode('drillDown')">
+                    🔽 Drill Down
+                </button>
+                <button id="quickSearchTab" class="filter-tab" onclick="switchFilterMode('quickSearch')">
+                    🔍 Quick Search
+                </button>
             </div>
 
-            <div class="form-group">
-                <label>Readiness 🚦</label>
-                <select id="filterReadiness">
-                    <option value="">All</option>
-                    <option value="Not Started">🔴 Not Started</option>
-                    <option value="Baseline Only">🟡 Baseline</option>
-                    <option value="In Development">🟡 Dev</option>
-                    <option value="Ready for Delivery">🟢 Ready</option>
-                    <option value="Client Approved">⭐ Approved</option>
-                </select>
+            <!-- Drill Down Filters (Sequential) -->
+            <div id="drillDownFilters" class="filter-mode-content active">
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
+                    Navigate step-by-step: Client → Programme → Module
+                </p>
+                <div class="search-container">
+                    <div class="form-group">
+                        <label>Client</label>
+                        <select id="filterClient">
+                            <option value="">All Clients</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Programme</label>
+                        <select id="filterProgramme" disabled>
+                            <option value="">Select client first</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Module</label>
+                        <select id="filterModule" disabled>
+                            <option value="">Select programme first</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div>
+            <!-- Quick Search Filters (Independent) -->
+            <div id="quickSearchFilters" class="filter-mode-content">
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">
+                    Search directly by any criteria - all filters are independent
+                </p>
+                <div class="search-container">
+                    <div class="form-group">
+                        <label>Programme</label>
+                        <select id="quickSearchProgramme">
+                            <option value="">All Programmes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Module</label>
+                        <select id="quickSearchModule">
+                            <option value="">All Modules</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Readiness 🚦</label>
+                        <select id="filterReadiness">
+                            <option value="">All</option>
+                            <option value="Not Started">🔴 Not Started</option>
+                            <option value="Baseline Only">🟡 Baseline</option>
+                            <option value="In Development">🟡 Dev</option>
+                            <option value="Ready for Delivery">🟢 Ready</option>
+                            <option value="Client Approved">⭐ Approved</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="filterStatus">
+                            <option value="">All Statuses</option>
+                            <option>Open</option>
+                            <option>Customization</option>
+                            <option>Playback</option>
+                            <option>QA</option>
+                            <option>Ready for Delivery</option>
+                            <option>Close</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Apply/Clear Buttons -->
+            <div style="margin-top: 20px;">
                 <button class="btn" onclick="applyFilters()">Apply Filters</button>
                 <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
             </div>
         </div>
-        <div id="resultsCount" style="margin-bottom: 15px; color: #64748b; font-weight: 600;"></div>
-        <div id="dataContainer" class="loading">Select filters and click "Apply Filters"</div>
+
+        <!-- Results Section (Full Width) -->
+        <div style="clear: both; width: 100%;">
+            <!-- Warning Box (shown after filtering) -->
+            <div id="readinessWarning" class="warning-box" style="display: none;"></div>
+
+            <div id="resultsCount" style="margin: 20px 0 15px 0; color: #64748b; font-weight: 600;"></div>
+            <div id="dataContainer" class="loading">Select filters and click "Apply Filters"</div>
+        </div>
     </div>
-</div>
 
 <!-- Edit Modal -->
 <div class="modal" id="editModal">
@@ -489,7 +566,15 @@
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let allData = [];
-    let currentFilters = { client: null, programme: null, module: null, status: null, readiness: null };
+    let currentFilters = { 
+        client: null, 
+        programme: null, 
+        module: null, 
+        status: null, 
+        readiness: null,
+        quickProgramme: null,
+        quickModule: null
+    };
     
     // Track newly created IDs during form flow
     let formState = {
@@ -506,6 +591,20 @@
 
     function hideGlobalLoading() {
         document.getElementById('globalLoader').classList.add('hidden');
+    }
+
+    function switchFilterMode(mode) {
+        // Update tab buttons
+        document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.filter-mode-content').forEach(content => content.classList.remove('active'));
+        
+        if (mode === 'drillDown') {
+            document.getElementById('drillDownTab').classList.add('active');
+            document.getElementById('drillDownFilters').classList.add('active');
+        } else {
+            document.getElementById('quickSearchTab').classList.add('active');
+            document.getElementById('quickSearchFilters').classList.add('active');
+        }
     }
 
     function showTab(tabName) {
@@ -559,11 +658,32 @@
     }
 
     async function populateFilterDropdowns() {
+        // Load clients for drill-down filter
         const { data: clients } = await supabase.from('clients').select('*').order('client_name');
-        const sel = document.getElementById('filterClient');
-        sel.innerHTML = '<option value="">All Clients</option>';
+        const clientSel = document.getElementById('filterClient');
+        clientSel.innerHTML = '<option value="">All Clients</option>';
         clients?.forEach(c => {
-            sel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
+            clientSel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
+        });
+
+        // Load ALL programmes for quick search
+        const { data: programmes } = await supabase.from('programmes').select('*').order('programme_name');
+        const quickProgSel = document.getElementById('quickSearchProgramme');
+        quickProgSel.innerHTML = '<option value="">All Programmes</option>';
+        programmes?.forEach(p => {
+            quickProgSel.innerHTML += `<option value="${p.programme_id}">${p.programme_name}</option>`;
+        });
+
+        // Load ALL modules for quick search
+        const { data: modules } = await supabase
+            .from('modules')
+            .select('module_id, module_name, module_number, programmes(programme_name)')
+            .order('module_name');
+        const quickModSel = document.getElementById('quickSearchModule');
+        quickModSel.innerHTML = '<option value="">All Modules</option>';
+        modules?.forEach(m => {
+            const progName = m.programmes?.programme_name || '';
+            quickModSel.innerHTML += `<option value="${m.module_id}">${m.module_name}${progName ? ' (' + progName + ')' : ''}</option>`;
         });
     }
 
@@ -575,7 +695,7 @@
         clients?.forEach(c => {
             clientSel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
         });
-        clientSel.innerHTML += '<option value="__new__">➕ Create New Client</option>';
+        clientSel.innerHTML += '<option value="__new__">Create New Client</option>';
 
         // Readiness warning handler
         document.getElementById('addReadiness').onchange = (e) => {
@@ -614,7 +734,7 @@
                         progSel.innerHTML += `<option value="${p.programmes.programme_id}">${p.programmes.programme_name}</option>`;
                     }
                 });
-                progSel.innerHTML += '<option value="__new__">➕ Create New Programme</option>';
+                progSel.innerHTML += '<option value="__new__">Create New Programme</option>';
                 progSel.disabled = false;
             } else {
                 progSel.disabled = true;
@@ -648,7 +768,7 @@
                 data?.forEach(m => {
                     modSel.innerHTML += `<option value="${m.module_id}">${m.module_name}</option>`;
                 });
-                modSel.innerHTML += '<option value="__new__">➕ Create New Module</option>';
+                modSel.innerHTML += '<option value="__new__">Create New Module</option>';
                 modSel.disabled = false;
             } else {
                 modSel.disabled = true;
@@ -680,7 +800,7 @@
                 data?.forEach(c => {
                     clsSel.innerHTML += `<option value="${c.class_id}">${c.class_name}</option>`;
                 });
-                clsSel.innerHTML += '<option value="__new__">➕ Create New Class</option>';
+                clsSel.innerHTML += '<option value="__new__">Create New Class</option>';
                 clsSel.disabled = false;
             } else {
                 clsSel.disabled = true;
@@ -742,8 +862,7 @@
                 if (readiness === 'Not Started' || readiness === 'Baseline Only' || readiness === 'In Development') {
                     const confirmed = confirm(
                         `⚠️ CONTENT READINESS WARNING\n\n` +
-                        `This content is marked as "${readiness}".\n\n` +
-                        `Have you confirmed with the Education team?\n\n` +
+                        `This content is marked as "${readiness}". Please confirm with the Education team!\n\n` +
                         `Click OK to proceed, or Cancel to review.`
                     );
                     if (!confirmed) {
@@ -1134,6 +1253,15 @@
         currentFilters.module = e.target.value || null;
     });
 
+    // Quick search filters (independent)
+    document.getElementById('quickSearchProgramme').addEventListener('change', (e) => {
+        currentFilters.quickProgramme = e.target.value || null;
+    });
+
+    document.getElementById('quickSearchModule').addEventListener('change', (e) => {
+        currentFilters.quickModule = e.target.value || null;
+    });
+
     document.getElementById('filterStatus').addEventListener('change', (e) => {
         currentFilters.status = e.target.value || null;
     });
@@ -1146,60 +1274,151 @@
         console.log('Initial data:', allData);
         let filtered = [...allData];
 
-        if (currentFilters.client) {
-            filtered = filtered.filter(item => {
-                const matches = item.client_pathways?.clients?.client_id == currentFilters.client;
-                console.log(`Client filter (${currentFilters.client}):`, item.client_pathways?.clients?.client_id, matches);
-                return matches;
-            });
-        }
+        // Check which filter mode is active
+        const drillDownActive = document.getElementById('drillDownFilters').classList.contains('active');
+        const quickSearchActive = document.getElementById('quickSearchFilters').classList.contains('active');
 
-        // When filtering by programme, we need to look through client_pathways
-        if (currentFilters.programme) {
-            filtered = filtered.filter(item => {
-                const matches = item.client_pathways?.programme_id == currentFilters.programme;
-                console.log(`Programme filter (${currentFilters.programme}):`, item.client_pathways?.programme_id, matches);
-                return matches;
-            });
-        }
+        if (drillDownActive) {
+            // Use only drill-down filters
+            if (currentFilters.client) {
+                filtered = filtered.filter(item => {
+                    const matches = item.client_pathways?.clients?.client_id == currentFilters.client;
+                    console.log(`Client filter (${currentFilters.client}):`, item.client_pathways?.clients?.client_id, matches);
+                    return matches;
+                });
+            }
 
-        if (currentFilters.module) {
-            filtered = filtered.filter(item => {
-                const matches = item.classes?.module_id == currentFilters.module;
-                console.log(`Module filter (${currentFilters.module}):`, item.classes?.module_id, matches);
-                return matches;
-            });
-        }
+            if (currentFilters.programme) {
+                filtered = filtered.filter(item => {
+                    const matches = item.client_pathways?.programme_id == currentFilters.programme;
+                    console.log(`Programme filter (${currentFilters.programme}):`, item.client_pathways?.programme_id, matches);
+                    return matches;
+                });
+            }
 
-        if (currentFilters.status) {
-            filtered = filtered.filter(item => {
-                const matches = item.status === currentFilters.status;
-                console.log(`Status filter (${currentFilters.status}):`, item.status, matches);
-                return matches;
-            });
-        }
+            if (currentFilters.module) {
+                filtered = filtered.filter(item => {
+                    const matches = item.classes?.module_id == currentFilters.module;
+                    console.log(`Module filter (${currentFilters.module}):`, item.classes?.module_id, matches);
+                    return matches;
+                });
+            }
+        } else if (quickSearchActive) {
+            // Use only quick search filters
+            if (currentFilters.quickProgramme) {
+                filtered = filtered.filter(item => {
+                    const pathwayMatch = item.client_pathways?.programme_id == currentFilters.quickProgramme;
+                    const classMatch = item.classes?.modules?.programme_id == currentFilters.quickProgramme;
+                    const matches = pathwayMatch || classMatch;
+                    console.log(`Quick Programme filter (${currentFilters.quickProgramme}):`, matches);
+                    return matches;
+                });
+            }
 
-        if (currentFilters.readiness) {
-            filtered = filtered.filter(item => {
-                const matches = item.readiness_level === currentFilters.readiness;
-                console.log(`Readiness filter (${currentFilters.readiness}):`, item.readiness_level, matches);
-                return matches;
-            });
+            if (currentFilters.quickModule) {
+                filtered = filtered.filter(item => {
+                    const matches = item.classes?.module_id == currentFilters.quickModule;
+                    console.log(`Quick Module filter (${currentFilters.quickModule}):`, matches);
+                    return matches;
+                });
+            }
+
+            if (currentFilters.status) {
+                filtered = filtered.filter(item => {
+                    const matches = item.status === currentFilters.status;
+                    console.log(`Status filter (${currentFilters.status}):`, item.status, matches);
+                    return matches;
+                });
+            }
+
+            if (currentFilters.readiness) {
+                filtered = filtered.filter(item => {
+                    const matches = item.readiness_level === currentFilters.readiness;
+                    console.log(`Readiness filter (${currentFilters.readiness}):`, item.readiness_level, matches);
+                    return matches;
+                });
+            }
         }
 
         console.log('Filtered results:', filtered);
+        
+        // Show readiness warning if applicable
+        showReadinessWarning(filtered);
+        
         displayResults(filtered);
     }
 
+    function showReadinessWarning(data) {
+        const warningBox = document.getElementById('readinessWarning');
+        
+        if (!data || data.length === 0) {
+            warningBox.style.display = 'none';
+            return;
+        }
+
+        // Count readiness levels
+        const notStarted = data.filter(item => item.readiness_level === 'Not Started').length;
+        const baselineOnly = data.filter(item => item.readiness_level === 'Baseline Only').length;
+        const inDev = data.filter(item => item.readiness_level === 'In Development').length;
+        const ready = data.filter(item => item.readiness_level === 'Ready for Delivery').length;
+        const approved = data.filter(item => item.readiness_level === 'Client Approved').length;
+
+        // Only show warning if there are non-ready items
+        if (notStarted > 0 || baselineOnly > 0 || inDev > 0) {
+            let warningText = `<strong>⚠️ Content Readiness Alert:</strong><br>`;
+            
+            if (notStarted > 0) warningText += `🔴 <strong>${notStarted}</strong> Not Started | `;
+            if (baselineOnly > 0) warningText += `🟡 <strong>${baselineOnly}</strong> Baseline Only | `;
+            if (inDev > 0) warningText += `🟡 <strong>${inDev}</strong> In Development | `;
+            
+            warningText = warningText.slice(0, -3); // Remove last " | "
+            warningText += `<br><br>`;
+            
+            if (ready > 0) warningText += `✅ <strong>${ready}</strong> Ready for Delivery | `;
+            if (approved > 0) warningText += `⭐ <strong>${approved}</strong> Client Approved | `;
+            
+            if (ready > 0 || approved > 0) {
+                warningText = warningText.slice(0, -3);
+            } else {
+                warningText += `<br>❗ <strong>No items are ready for client delivery.</strong>`;
+            }
+
+            warningBox.innerHTML = warningText;
+            warningBox.style.display = 'block';
+        } else {
+            warningBox.style.display = 'none';
+        }
+    }
+
     function clearFilters() {
+        // Clear cascading filters
         document.getElementById('filterClient').value = '';
         document.getElementById('filterProgramme').value = '';
-        //document.getElementById('filterProgramme').disabled = true;
+        document.getElementById('filterProgramme').disabled = true;
         document.getElementById('filterModule').value = '';
-        //document.getElementById('filterModule').disabled = true;
-        document.getElementById('filterStatus').value = '';
+        document.getElementById('filterModule').disabled = true;
         
-        currentFilters = { client: null, programme: null, module: null, status: null };
+        // Clear quick search filters
+        document.getElementById('quickSearchProgramme').value = '';
+        document.getElementById('quickSearchModule').value = '';
+        
+        // Clear status and readiness
+        document.getElementById('filterStatus').value = '';
+        document.getElementById('filterReadiness').value = '';
+        
+        // Reset filter state
+        currentFilters = { 
+            client: null, 
+            programme: null, 
+            module: null, 
+            status: null, 
+            readiness: null,
+            quickProgramme: null,
+            quickModule: null
+        };
+        
+        // Hide warning and reset display
+        document.getElementById('readinessWarning').style.display = 'none';
         document.getElementById('dataContainer').innerHTML = '<p class="loading">Select filters and click "Apply Filters"</p>';
         document.getElementById('resultsCount').textContent = '';
     }
@@ -1218,30 +1437,48 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Client</th>
-                            <th>Programme</th>
-                            <th>Module</th>
-                            <th>Class</th>
-                            <th>Version Code</th>
-                            <th>Version</th>
-                            <th>Readiness</th>
-                            <th>Status</th>
-                            <th>Feedback</th>
-                            <th>Actions</th>
+                            <th style="min-width: 100px;">Client</th>
+                            <th style="min-width: 140px;">Programme</th>
+                            <th style="min-width: 60px; text-align: center;">🚦</th>
+                            <th style="min-width: 140px;">Module</th>
+                            <th style="min-width: 140px;">Class</th>
+                            <th style="min-width: 100px;">Status</th>
+                            <th style="min-width: 120px;">Version Code</th>
+                            <th style="min-width: 80px;">Ver</th>
+                            <th style="min-width: 100px;">Feedback</th>
+                            <th style="min-width: 130px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${data.map(item => `
+                        ${data.map(item => {
+                            // Determine readiness icon and tooltip
+                            let readinessIcon = '🟢';
+                            let readinessText = 'Ready for Delivery';
+                            if (item.readiness_level === 'Not Started') {
+                                readinessIcon = '🔴';
+                                readinessText = 'Not Started';
+                            } else if (item.readiness_level === 'Baseline Only') {
+                                readinessIcon = '🟡';
+                                readinessText = 'Baseline Only';
+                            } else if (item.readiness_level === 'In Development') {
+                                readinessIcon = '🟡';
+                                readinessText = 'In Development';
+                            } else if (item.readiness_level === 'Client Approved') {
+                                readinessIcon = '⭐';
+                                readinessText = 'Client Approved';
+                            }
+                            
+                            return `
                             <tr>
                                 <td>${item.client_pathways?.clients?.client_name || '-'}</td>
                                 <td>${item.classes?.modules?.programmes?.programme_name || '-'}</td>
+                                <td style="text-align: center; font-size: 1.3rem;" title="${readinessText}">${readinessIcon}</td>
                                 <td>${item.classes?.modules?.module_name || '-'}</td>
                                 <td>${item.classes?.class_name || '-'}</td>
+                                <td>${getStatusBadge(item.status)}</td>
                                 <td><strong>${item.version_code}</strong></td>
                                 <td>${item.version_number || '-'}</td>
-                                <td><span style="font-size: 1.2rem;">${item.readiness_level === 'Not Started' ? '🔴' : item.readiness_level === 'Baseline Only' || item.readiness_level === 'In Development' ? '🟡' : '🟢'}</span></td>
-                                <td>${getStatusBadge(item.status)}</td>
-                                <td>${item.client_feedback || '-'}</td>
+                                <td style="font-size: 0.9rem;">${item.client_feedback || '-'}</td>
                                 <td>
                                     <button class="action-btn edit-btn" onclick="openEditModal(${item.version_id})">
                                         Edit
@@ -1251,7 +1488,8 @@
                                     </button>
                                 </td>
                             </tr>
-                        `).join('')}
+                        `;
+                        }).join('')}
                     </tbody>
                 </table>
             </div>
