@@ -101,6 +101,11 @@
         .status-playback, .status-qa { background: #dbeafe; color: #1e40af; }
         .status-ready-for-delivery { background: #c6f6d5; color: #22543d; }
         .status-close { background: #fed7d7; color: #742a2a; }
+        .row-red { background-color: #fee2e2 !important; }
+        .row-yellow { background-color: #fef3c7 !important; }
+        .row-green { background-color: #d1fae5 !important; }
+        .warning-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8fafc; border-radius: 8px; }
 
         .loading { text-align: center; padding: 40px; color: #4a5568; }
         .message { padding: 15px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; }
@@ -221,7 +226,7 @@
 
     <!-- Add New Entry -->
     <div id="add" class="tab-content">
-        <h2>➕ Add New Content Version</h2>
+        <h2> Add New Content Version</h2>
         <p class="help-text">Select existing entities or create new ones inline as you go</p>
         <div id="addMessage"></div>
         <form id="addForm">
@@ -289,15 +294,41 @@
                     <input type="text" id="addVersionNumber" readonly value="v1.0" style="background: #f3f4f6;" />
                     <span class="help-text">Auto-increments based on existing versions</span>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Content Readiness * 🚦</label>
+                        <select id="addReadiness" required>
+                            <option value="Not Started">🔴 Not Started</option>
+                            <option value="Baseline Only">🟡 Baseline Only</option>
+                            <option value="In Development">🟡 In Development</option>
+                            <option value="Ready for Delivery" selected>🟢 Ready for Delivery</option>
+                            <option value="Client Approved">⭐ Client Approved</option>
+                        </select>
+                        <span class="help-text">CS can only propose 🟢 Ready or ⭐ Approved</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Workflow Status *</label>
+                        <select id="addStatus" required>
+                            <option>Open</option>
+                            <option>Customization</option>
+                            <option>Playback</option>
+                            <option>QA</option>
+                            <option>Ready for Delivery</option>
+                            <option>Close</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Status *</label>
-                    <select id="addStatus" required>
-                        <option>Open</option>
-                        <option>Customization</option>
-                        <option>Playback</option>
-                        <option>QA</option>
-                        <option>Ready for Delivery</option>
-                        <option>Close</option>
+                    <label>Client Feedback / Rating</label>
+                    <select id="addFeedback">
+                        <option value="">No feedback yet</option>
+                        <option value="Excellent">⭐⭐⭐⭐⭐ Excellent</option>
+                        <option value="Good">⭐⭐⭐⭐ Good</option>
+                        <option value="Neutral">⭐⭐⭐ Neutral</option>
+                        <option value="Needs Improvement">⭐⭐ Needs Improvement</option>
+                        <option value="Poor">⭐ Poor - Requires Overhaul</option>
                     </select>
                 </div>
             </div>
@@ -312,13 +343,18 @@
                 <textarea id="addNotes" rows="3" placeholder="Any additional notes..."></textarea>
             </div>
 
+            <div id="readinessWarning" class="warning-box" style="display: none;">
+                <strong style="color: #92400e;">⚠️ CONTENT READINESS WARNING</strong>
+                <p style="color: #92400e; margin-top: 8px;" id="warningText"></p>
+            </div>
+
             <button type="submit" class="btn" style="width:100%">Add Content Version</button>
         </form>
     </div>
 
     <!-- View & Search -->
     <div id="view" class="tab-content">
-        <h2>🔍 View & Search Content Versions</h2>
+        <h2>View & Search Content Versions</h2>
         <div class="search-container">
             <div class="form-group">
                 <label>Client</label>
@@ -350,6 +386,19 @@
                     <option>Close</option>
                 </select>
             </div>
+
+            <div class="form-group">
+                <label>Readiness 🚦</label>
+                <select id="filterReadiness">
+                    <option value="">All</option>
+                    <option value="Not Started">🔴 Not Started</option>
+                    <option value="Baseline Only">🟡 Baseline</option>
+                    <option value="In Development">🟡 Dev</option>
+                    <option value="Ready for Delivery">🟢 Ready</option>
+                    <option value="Client Approved">⭐ Approved</option>
+                </select>
+            </div>
+
             <div>
                 <button class="btn" onclick="applyFilters()">Apply Filters</button>
                 <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
@@ -378,6 +427,17 @@
                 <label>Version Number</label>
                 <input type="text" id="editVersionNumber">
             </div>
+
+            <div class="form-group">
+                <label>Content Readiness 🚦</label>
+                <select id="editReadiness">
+                    <option value="Not Started">🔴 Not Started</option>
+                    <option value="Baseline Only">🟡 Baseline</option>
+                    <option value="In Development">🟡 In Development</option>
+                    <option value="Ready for Delivery">🟢 Ready</option>
+                    <option value="Client Approved">⭐ Approved</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label>Status</label>
                 <select id="editStatus">
@@ -389,6 +449,27 @@
                     <option>Close</option>
                 </select>
             </div>
+            <div class="form-group">
+                <label>Client Feedback</label>
+                <select id="editFeedback">
+                    <option value="">No feedback</option>
+                    <option value="Excellent">⭐⭐⭐⭐⭐</option>
+                    <option value="Good">⭐⭐⭐⭐</option>
+                    <option value="Neutral">⭐⭐⭐</option>
+                    <option value="Needs Improvement">⭐⭐</option>
+                    <option value="Poor">⭐</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>What Changed? (Changelog)</label>
+                <textarea id="editChangeSummary" rows="3" placeholder="e.g., Updated slides 5-7"></textarea>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="editSignificantChange">
+                <label for="editSignificantChange" style="margin: 0;">🚨 Significant change</label>
+            </div>
+
             <div class="form-group">
                 <label>Drive Link</label>
                 <input type="url" id="editDriveLink">
@@ -408,7 +489,7 @@
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let allData = [];
-    let currentFilters = { client: null, programme: null, module: null, status: null };
+    let currentFilters = { client: null, programme: null, module: null, status: null, readiness: null };
     
     // Track newly created IDs during form flow
     let formState = {
@@ -495,6 +576,19 @@
             clientSel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
         });
         clientSel.innerHTML += '<option value="__new__">➕ Create New Client</option>';
+
+        // Readiness warning handler
+        document.getElementById('addReadiness').onchange = (e) => {
+            const readiness = e.target.value;
+            const warningBox = document.getElementById('readinessWarning');
+            const warningText = document.getElementById('warningText');
+            if (readiness === 'Not Started' || readiness === 'Baseline Only' || readiness === 'In Development') {
+                warningBox.style.display = 'block';
+                warningText.textContent = `This content is marked as "${readiness}". CS should NOT propose this to clients without Education team approval.`;
+            } else {
+                warningBox.style.display = 'none';
+            }
+        };
 
         // Client change handler
         clientSel.onchange = async (e) => {
@@ -643,13 +737,29 @@
                     pathway = newPathway;
                 }
 
-                // Insert content version
+                const readiness = document.getElementById('addReadiness').value;
+                // Warning confirmation for incomplete content
+                if (readiness === 'Not Started' || readiness === 'Baseline Only' || readiness === 'In Development') {
+                    const confirmed = confirm(
+                        `⚠️ CONTENT READINESS WARNING\n\n` +
+                        `This content is marked as "${readiness}".\n\n` +
+                        `Have you confirmed with the Education team?\n\n` +
+                        `Click OK to proceed, or Cancel to review.`
+                    );
+                    if (!confirmed) {
+                        hideGlobalLoading();
+                        return;
+                    }
+                }
+
                 const { error } = await supabase.from('content_versions').insert({
                     class_id: formState.classId,
                     pathway_id: pathway.pathway_id,
                     version_code: document.getElementById('addVersionCode').value,
                     version_number: document.getElementById('addVersionNumber').value,
                     status: document.getElementById('addStatus').value,
+                    readiness_level: readiness,
+                    client_feedback: document.getElementById('addFeedback').value || null,
                     drive_link: document.getElementById('addDriveLink').value || null,
                     notes: document.getElementById('addNotes').value || null,
                     created_by: 'Dashboard User'
@@ -920,18 +1030,29 @@
                 .select(`
                     *,
                     classes (
+                        class_id,
                         class_name,
                         class_number,
+                        module_id,
                         modules (
+                            module_id,
                             module_name,
                             module_number,
+                            programme_id,
                             programmes (
+                                programme_id,
                                 programme_name
                             )
                         )
                     ),
                     client_pathways (
+                        pathway_id,
+                        programme_id,
                         cohort_name,
+                        programmes (
+                            programme_id,
+                            programme_name
+                        ),
                         clients (
                             client_id,
                             client_name
@@ -942,6 +1063,7 @@
 
             if (error) throw error;
             allData = data || [];
+            console.log('Loaded data:', allData);
         } catch (error) {
             console.error('Error loading data:', error);
         }
@@ -1016,31 +1138,56 @@
         currentFilters.status = e.target.value || null;
     });
 
+    document.getElementById('filterReadiness').addEventListener('change', (e) => {
+        currentFilters.readiness = e.target.value || null;
+    });
+
     function applyFilters() {
+        console.log('Initial data:', allData);
         let filtered = [...allData];
 
         if (currentFilters.client) {
-            filtered = filtered.filter(item => 
-                item.client_pathways?.clients?.client_id == currentFilters.client
-            );
+            filtered = filtered.filter(item => {
+                const matches = item.client_pathways?.clients?.client_id == currentFilters.client;
+                console.log(`Client filter (${currentFilters.client}):`, item.client_pathways?.clients?.client_id, matches);
+                return matches;
+            });
         }
 
+        // When filtering by programme, we need to look through client_pathways
         if (currentFilters.programme) {
-            filtered = filtered.filter(item => 
-                item.classes?.modules?.programmes?.programme_id == currentFilters.programme
-            );
+            filtered = filtered.filter(item => {
+                const matches = item.client_pathways?.programme_id == currentFilters.programme;
+                console.log(`Programme filter (${currentFilters.programme}):`, item.client_pathways?.programme_id, matches);
+                return matches;
+            });
         }
 
         if (currentFilters.module) {
-            filtered = filtered.filter(item => 
-                item.classes?.modules?.module_id == currentFilters.module
-            );
+            filtered = filtered.filter(item => {
+                const matches = item.classes?.module_id == currentFilters.module;
+                console.log(`Module filter (${currentFilters.module}):`, item.classes?.module_id, matches);
+                return matches;
+            });
         }
 
         if (currentFilters.status) {
-            filtered = filtered.filter(item => item.status === currentFilters.status);
+            filtered = filtered.filter(item => {
+                const matches = item.status === currentFilters.status;
+                console.log(`Status filter (${currentFilters.status}):`, item.status, matches);
+                return matches;
+            });
         }
 
+        if (currentFilters.readiness) {
+            filtered = filtered.filter(item => {
+                const matches = item.readiness_level === currentFilters.readiness;
+                console.log(`Readiness filter (${currentFilters.readiness}):`, item.readiness_level, matches);
+                return matches;
+            });
+        }
+
+        console.log('Filtered results:', filtered);
         displayResults(filtered);
     }
 
@@ -1077,7 +1224,9 @@
                             <th>Class</th>
                             <th>Version Code</th>
                             <th>Version</th>
+                            <th>Readiness</th>
                             <th>Status</th>
+                            <th>Feedback</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -1090,7 +1239,9 @@
                                 <td>${item.classes?.class_name || '-'}</td>
                                 <td><strong>${item.version_code}</strong></td>
                                 <td>${item.version_number || '-'}</td>
+                                <td><span style="font-size: 1.2rem;">${item.readiness_level === 'Not Started' ? '🔴' : item.readiness_level === 'Baseline Only' || item.readiness_level === 'In Development' ? '🟡' : '🟢'}</span></td>
                                 <td>${getStatusBadge(item.status)}</td>
+                                <td>${item.client_feedback || '-'}</td>
                                 <td>
                                     <button class="action-btn edit-btn" onclick="openEditModal(${item.version_id})">
                                         Edit
@@ -1121,10 +1272,13 @@
         document.getElementById('editVersionId').value = version.version_id;
         document.getElementById('editVersionCode').value = version.version_code;
         document.getElementById('editVersionNumber').value = version.version_number || '';
+        document.getElementById('editReadiness').value = version.readiness_level || 'Ready for Delivery';
         document.getElementById('editStatus').value = version.status || 'Open';
+        document.getElementById('editFeedback').value = version.client_feedback || '';
+        document.getElementById('editChangeSummary').value = version.change_summary || '';
+        document.getElementById('editSignificantChange').checked = version.is_significant_change || false;
         document.getElementById('editDriveLink').value = version.drive_link || '';
         document.getElementById('editNotes').value = version.notes || '';
-
         document.getElementById('editModal').classList.add('active');
     }
 
@@ -1137,9 +1291,15 @@
         e.preventDefault();
 
         const versionId = document.getElementById('editVersionId').value;
+        const changeSummary = document.getElementById('editChangeSummary').value.trim();
+        const isSignificant = document.getElementById('editSignificantChange').checked;
         const updates = {
             version_number: document.getElementById('editVersionNumber').value,
+            readiness_level: document.getElementById('editReadiness').value,
             status: document.getElementById('editStatus').value,
+            client_feedback: document.getElementById('editFeedback').value || null,
+            change_summary: changeSummary || null,
+            is_significant_change: isSignificant,
             drive_link: document.getElementById('editDriveLink').value || null,
             notes: document.getElementById('editNotes').value || null,
             updated_at: new Date().toISOString()
@@ -1155,8 +1315,16 @@
 
             if (error) throw error;
 
-            document.getElementById('modalMessage').innerHTML = 
-                '<div class="message success">Updated successfully!</div>';
+            if (changeSummary) {
+                await supabase.from('version_changelog').insert({
+                    version_id: versionId,
+                    change_description: changeSummary,
+                    is_significant: isSignificant,
+                    changed_by: 'Dashboard User'
+                });
+            }
+            
+            document.getElementById('modalMessage').innerHTML = '<div class="message success"> Updated successfully!</div>';
 
             setTimeout(() => {
                 closeModal();
