@@ -249,7 +249,7 @@
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="totalVersions">-</div>
-                <div class="stat-label">Content Versions</div>
+                <div class="stat-label">Ready for Delivery!</div>
             </div>
         </div>
     </div>
@@ -547,13 +547,15 @@
                 </span>
             </div>
 
-            <div class="checkbox-group">
-                <input type="checkbox" id="editSignificantChange" onchange="updateVersionPreview()">
-                <label for="editSignificantChange" style="margin: 0;">🚨 Significant change</label>
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="editSignificantChange" onchange="updateVersionPreview()">
+                    <label for="editSignificantChange" style="margin: 0;">🚨 Significant change</label>
+                </div>
+                <span class="help-text" style="margin-top: 8px; display: block;">
+                    ☐ Unchecked = Minor update (v1.0 → v1.1) | ☑ Checked = Major overhaul (v1.x → v2.0)
+                </span>
             </div>
-            <span class="help-text" style="margin-top: -10px; display: block; margin-left: 30px;">
-                ☐ Unchecked = Minor update (v1.0 → v1.1) | ☑ Checked = Major overhaul (v1.x → v2.0)
-            </span>
 
             <div class="form-group">
                 <label>Drive Link</label>
@@ -565,6 +567,19 @@
             </div>
             <button type="submit" class="btn" style="width: 100%;">Save Changes</button>
         </form>
+    </div>
+</div>
+
+<!-- History Modal -->
+<div class="modal" id="historyModal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+            <h3>📜 Version History</h3>
+            <button class="close-btn" onclick="closeHistoryModal()">&times;</button>
+        </div>
+        <div id="historyContent" style="max-height: 500px; overflow-y: auto;">
+            <p style="text-align: center; color: #64748b;">Loading history...</p>
+        </div>
     </div>
 </div>
 
@@ -656,7 +671,13 @@
             document.getElementById('totalProgrammes').textContent = programmes.data?.length || 0;
             document.getElementById('totalModules').textContent = modules.data?.length || 0;
             document.getElementById('totalClasses').textContent = classes.data?.length || 0;
-            document.getElementById('totalVersions').textContent = versions.data?.length || 0;
+            
+            // Count only content that's ready for delivery or client approved
+            const readyCount = versions.data?.filter(v => 
+                v.readiness_level === 'Ready for Delivery' || 
+                v.readiness_level === 'Client Approved'
+            ).length || 0;
+            document.getElementById('totalVersions').textContent = readyCount;
 
             await populateFilterDropdowns();
             await loadAllData();
@@ -703,7 +724,7 @@
         clients?.forEach(c => {
             clientSel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
         });
-        clientSel.innerHTML += '<option value="__new__">➕ Create New Client</option>';
+        clientSel.innerHTML += '<option value="__new__">Create New Client</option>';
 
         // Readiness warning handler
         document.getElementById('addReadiness').onchange = (e) => {
@@ -870,7 +891,7 @@
                 if (readiness === 'Not Started' || readiness === 'Baseline Only' || readiness === 'In Development') {
                     const confirmed = confirm(
                         `⚠️ CONTENT READINESS WARNING\n\n` +
-                        `This content is marked as "${readiness}". Please confirm with the Education team before proceeding.\n\n` +
+                        `This content is marked as "${readiness}".\n\n` +
                         `Click OK to proceed, or Cancel to review.`
                     );
                     if (!confirmed) {
@@ -1491,6 +1512,9 @@
                                     <button class="action-btn edit-btn" onclick="openEditModal(${item.version_id})">
                                         Edit
                                     </button>
+                                    <button class="action-btn" style="background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);" onclick="viewHistory(${item.version_id})">
+                                        History
+                                    </button>
                                     <button class="action-btn delete-btn" onclick="deleteVersion(${item.version_id})">
                                         Delete
                                     </button>
@@ -1616,16 +1640,22 @@
 
             if (error) throw error;
 
+            // Insert changelog if there were content changes
             if (changeSummary) {
-                await supabase.from('version_changelog').insert({
-                    version_id: versionId,
+                const { error: logError } = await supabase.from('version_changelog').insert({
+                    version_id: parseInt(versionId),
                     change_description: changeSummary,
                     is_significant: isSignificant,
                     changed_by: 'Dashboard User'
                 });
+                
+                if (logError) {
+                    console.error('Changelog insert failed:', logError);
+                    alert('Warning: Changelog entry failed to save: ' + logError.message);
+                }
             }
             
-            document.getElementById('modalMessage').innerHTML = '<div class="message success">✅ Updated successfully!</div>';
+            document.getElementById('modalMessage').innerHTML = '<div class="message success">Updated successfully!</div>';
 
             setTimeout(() => {
                 closeModal();
@@ -1665,6 +1695,103 @@
         } finally {
             hideGlobalLoading();
         }
+    }
+
+    async function viewHistory(versionId) {
+        const version = allData.find(v => v.version_id === versionId);
+        if (!version) return;
+
+        document.getElementById('historyModal').classList.add('active');
+        document.getElementById('historyContent').innerHTML = '<p style="text-align: center; color: #64748b;">Loading history...</p>';
+
+        try {
+            // Fetch changelog for this version
+            const { data, error } = await supabase
+                .from('version_changelog')
+                .select('*')
+                .eq('version_id', versionId)
+                .order('changed_at', { ascending: false });
+
+            if (error) throw error;
+
+            // Build the history display
+            let html = `
+                <div style="background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                        <div>
+                            <strong style="color: #64748b; font-size: 0.85rem;">CLIENT</strong>
+                            <p style="margin-top: 5px;">${version.client_pathways?.clients?.client_name || '-'}</p>
+                        </div>
+                        <div>
+                            <strong style="color: #64748b; font-size: 0.85rem;">PROGRAMME</strong>
+                            <p style="margin-top: 5px;">${version.classes?.modules?.programmes?.programme_name || '-'}</p>
+                        </div>
+                        <div>
+                            <strong style="color: #64748b; font-size: 0.85rem;">MODULE</strong>
+                            <p style="margin-top: 5px;">${version.classes?.modules?.module_name || '-'}</p>
+                        </div>
+                        <div>
+                            <strong style="color: #64748b; font-size: 0.85rem;">CLASS</strong>
+                            <p style="margin-top: 5px;">${version.classes?.class_name || '-'}</p>
+                        </div>
+                        <div>
+                            <strong style="color: #64748b; font-size: 0.85rem;">VERSION CODE</strong>
+                            <p style="margin-top: 5px;"><strong>${version.version_code}</strong></p>
+                        </div>
+                        <div>
+                            <strong style="color: #64748b; font-size: 0.85rem;">CURRENT VERSION</strong>
+                            <p style="margin-top: 5px;"><strong>${version.version_number}</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <h4 style="margin-bottom: 15px; color: #4a5568;">📝 Change History</h4>
+            `;
+
+            if (!data || data.length === 0) {
+                html += '<p style="text-align: center; color: #94a3b8; padding: 30px;">No changes recorded yet</p>';
+            } else {
+                html += '<div style="display: flex; flex-direction: column; gap: 15px;">';
+                data.forEach(change => {
+                    const date = new Date(change.changed_at);
+                    const formattedDate = date.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    const badge = change.is_significant 
+                        ? '<span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">🚨 MAJOR</span>'
+                        : '<span style="background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">📌 MINOR</span>';
+
+                    html += `
+                        <div style="background: white; border: 2px solid #e2e8f0; border-radius: 10px; padding: 15px;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                <div>
+                                    <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">
+                                        ${formattedDate} • ${change.changed_by || 'Unknown'}
+                                    </div>
+                                    ${badge}
+                                </div>
+                            </div>
+                            <p style="color: #1e293b; line-height: 1.6; margin-top: 10px;">${change.change_description}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+
+            document.getElementById('historyContent').innerHTML = html;
+
+        } catch (error) {
+            document.getElementById('historyContent').innerHTML = 
+                `<p style="text-align: center; color: #ef4444; padding: 30px;">Error loading history: ${error.message}</p>`;
+        }
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModal').classList.remove('active');
     }
 
     window.addEventListener('load', () => {
