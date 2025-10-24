@@ -256,9 +256,8 @@
 
     <!-- Add New Entry -->
     <div id="add" class="tab-content">
-        <h2> Add New Content Version</h2>
-        <p class="help-text">Select existing entities or create new ones inline as you go</p>
-        <div id="addMessage"></div>
+        <h2> Add New Entry</h2>
+        <p></p>
         <form id="addForm">
             <div class="form-row">
                 <!-- CLIENT -->
@@ -353,12 +352,12 @@
                 <div class="form-group">
                     <label>Client Feedback / Rating</label>
                     <select id="addFeedback">
-                        <option value="">No feedback yet</option>
-                        <option value="Excellent">⭐⭐⭐⭐⭐ Excellent</option>
-                        <option value="Good">⭐⭐⭐⭐ Good</option>
-                        <option value="Neutral">⭐⭐⭐ Neutral</option>
-                        <option value="Needs Improvement">⭐⭐ Needs Improvement</option>
-                        <option value="Poor">⭐ Poor - Requires Overhaul</option>
+                        <option value="">No feedback yet </option>
+                        <option value="Excellent"> ⭐⭐⭐⭐⭐ Excellent </option>
+                        <option value="Good"> ⭐⭐⭐⭐ Good </option>
+                        <option value="Neutral"> ⭐⭐⭐ Neutral </option>
+                        <option value="Needs Improvement"> ⭐⭐ Needs Improvement </option>
+                        <option value="Poor"> ⭐ Poor - Requires Overhaul </option>
                     </select>
                 </div>
             </div>
@@ -501,8 +500,11 @@
                 <input type="text" id="editVersionCode" readonly style="background: #f3f4f6;">
             </div>
             <div class="form-group">
-                <label>Version Number</label>
-                <input type="text" id="editVersionNumber">
+                <label>Version Number (Auto-calculated)</label>
+                <input type="text" id="editVersionNumber" readonly style="background: #f3f4f6;">
+                <span class="help-text">
+                    ℹ️ Version only increments if you add a changelog entry below (content changed)
+                </span>
             </div>
 
             <div class="form-group">
@@ -530,22 +532,28 @@
                 <label>Client Feedback</label>
                 <select id="editFeedback">
                     <option value="">No feedback</option>
-                    <option value="Excellent">⭐⭐⭐⭐⭐</option>
-                    <option value="Good">⭐⭐⭐⭐</option>
-                    <option value="Neutral">⭐⭐⭐</option>
-                    <option value="Needs Improvement">⭐⭐</option>
-                    <option value="Poor">⭐</option>
+                    <option value="Excellent">⭐⭐⭐⭐⭐ Excellent</option>
+                    <option value="Good">⭐⭐⭐⭐ Good</option>
+                    <option value="Neutral">⭐⭐⭐ Neutral</option>
+                    <option value="Needs Improvement">⭐⭐ Needs Improvement</option>
+                    <option value="Poor">⭐ Poor</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>What Changed? (Changelog)</label>
-                <textarea id="editChangeSummary" rows="3" placeholder="e.g., Updated slides 5-7"></textarea>
+                <textarea id="editChangeSummary" rows="3" placeholder="e.g., Updated slides 5-7, Rewrote section 2, Added new examples" oninput="updateVersionPreview()"></textarea>
+                <span class="help-text">
+                    💡 Only fill this out if content actually changed. Leave blank for metadata updates (feedback, status, etc.)
+                </span>
             </div>
 
             <div class="checkbox-group">
-                <input type="checkbox" id="editSignificantChange">
+                <input type="checkbox" id="editSignificantChange" onchange="updateVersionPreview()">
                 <label for="editSignificantChange" style="margin: 0;">🚨 Significant change</label>
             </div>
+            <span class="help-text" style="margin-top: -10px; display: block; margin-left: 30px;">
+                ☐ Unchecked = Minor update (v1.0 → v1.1) | ☑ Checked = Major overhaul (v1.x → v2.0)
+            </span>
 
             <div class="form-group">
                 <label>Drive Link</label>
@@ -695,7 +703,7 @@
         clients?.forEach(c => {
             clientSel.innerHTML += `<option value="${c.client_id}">${c.client_name}</option>`;
         });
-        clientSel.innerHTML += '<option value="__new__">Create New Client</option>';
+        clientSel.innerHTML += '<option value="__new__">➕ Create New Client</option>';
 
         // Readiness warning handler
         document.getElementById('addReadiness').onchange = (e) => {
@@ -862,7 +870,7 @@
                 if (readiness === 'Not Started' || readiness === 'Baseline Only' || readiness === 'In Development') {
                     const confirmed = confirm(
                         `⚠️ CONTENT READINESS WARNING\n\n` +
-                        `This content is marked as "${readiness}". Please confirm with the Education team!\n\n` +
+                        `This content is marked as "${readiness}". Please confirm with the Education team before proceeding.\n\n` +
                         `Click OK to proceed, or Cancel to review.`
                     );
                     if (!confirmed) {
@@ -1509,15 +1517,59 @@
 
         document.getElementById('editVersionId').value = version.version_id;
         document.getElementById('editVersionCode').value = version.version_code;
-        document.getElementById('editVersionNumber').value = version.version_number || '';
+        
+        // Store current version for auto-increment calculation
+        const currentVersion = version.version_number || 'v1.0';
+        document.getElementById('editVersionNumber').setAttribute('data-current-version', currentVersion);
+        document.getElementById('editVersionNumber').value = currentVersion; // Show CURRENT version initially
+        
         document.getElementById('editReadiness').value = version.readiness_level || 'Ready for Delivery';
         document.getElementById('editStatus').value = version.status || 'Open';
         document.getElementById('editFeedback').value = version.client_feedback || '';
-        document.getElementById('editChangeSummary').value = version.change_summary || '';
-        document.getElementById('editSignificantChange').checked = version.is_significant_change || false;
+        document.getElementById('editChangeSummary').value = '';
+        document.getElementById('editSignificantChange').checked = false;
         document.getElementById('editDriveLink').value = version.drive_link || '';
         document.getElementById('editNotes').value = version.notes || '';
+        
         document.getElementById('editModal').classList.add('active');
+    }
+
+    function updateVersionPreview() {
+        const changelogField = document.getElementById('editChangeSummary');
+        const versionNumberField = document.getElementById('editVersionNumber');
+        const currentVersion = versionNumberField.getAttribute('data-current-version') || 'v1.0';
+        
+        // Only show new version if changelog has content
+        if (!changelogField.value.trim()) {
+            // No changelog = no version change
+            versionNumberField.value = currentVersion;
+            return;
+        }
+        
+        const isSignificant = document.getElementById('editSignificantChange').checked;
+        
+        // Parse current version (e.g., "v1.2" -> major: 1, minor: 2)
+        const match = currentVersion.match(/v?(\d+)\.(\d+)/);
+        if (!match) {
+            versionNumberField.value = 'v1.0';
+            return;
+        }
+        
+        let major = parseInt(match[1]);
+        let minor = parseInt(match[2]);
+        
+        // Calculate new version
+        if (isSignificant) {
+            // Significant change: bump major version, reset minor to 0
+            major += 1;
+            minor = 0;
+        } else {
+            // Minor change: bump minor version
+            minor += 1;
+        }
+        
+        const newVersion = `v${major}.${minor}`;
+        versionNumberField.value = newVersion;
     }
 
     function closeModal() {
@@ -1531,8 +1583,19 @@
         const versionId = document.getElementById('editVersionId').value;
         const changeSummary = document.getElementById('editChangeSummary').value.trim();
         const isSignificant = document.getElementById('editSignificantChange').checked;
+        
+        // Determine if version should increment
+        // Only increment if there's a changelog entry (meaning actual content changed)
+        let newVersionNumber = document.getElementById('editVersionNumber').getAttribute('data-current-version');
+        
+        if (changeSummary) {
+            // Content changed - use the auto-calculated version
+            newVersionNumber = document.getElementById('editVersionNumber').value;
+        }
+        // If no changelog, keep the current version (just metadata update like feedback/status)
+        
         const updates = {
-            version_number: document.getElementById('editVersionNumber').value,
+            version_number: newVersionNumber,
             readiness_level: document.getElementById('editReadiness').value,
             status: document.getElementById('editStatus').value,
             client_feedback: document.getElementById('editFeedback').value || null,
@@ -1562,7 +1625,7 @@
                 });
             }
             
-            document.getElementById('modalMessage').innerHTML = '<div class="message success"> Updated successfully!</div>';
+            document.getElementById('modalMessage').innerHTML = '<div class="message success">✅ Updated successfully!</div>';
 
             setTimeout(() => {
                 closeModal();
